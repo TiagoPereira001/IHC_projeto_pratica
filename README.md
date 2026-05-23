@@ -1,71 +1,135 @@
-# Getting Started with Create React App
+# 🎷 GenJazz UI
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Interface mobile simulada para a aplicação **Generative Jazz** — geração automática de progressões harmónicas de jazz.
 
-## Available Scripts
+Desenvolvido no âmbito da UC **Interação Humana com o Computador** (2025/2026)
+Universidade da Beira Interior — Faculdade de Engenharia, Departamento de Informática.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## 👥 Grupo
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+| Nº Aluno | Nome |
+|----------|------|
+| 53394    | ...  |
+| 55019    | ...  |
+| 55047    | ...  |
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## 🛠️ Tecnologias
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- [React](https://reactjs.org/) — framework de UI
+- [Clerk](https://clerk.com/) — autenticação de utilizadores
+- [React Router DOM](https://reactrouter.com/) — navegação entre rotas
+- [GenJazz API](https://genjazz-api.fly.dev) — backend de geração de progressões
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 📁 Estrutura do Projeto
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+src/
+├── App.js                  # Rotas principais da app
+├── AppScreens.js           # Navegação interna (dentro do SmartphoneFrame)
+├── SignInPage.js           # Ecrã de autenticação (Clerk)
+├── index.js                # Ponto de entrada — ClerkProvider
+├── screens/
+│   ├── HomeScreen.js       # Ecrã principal: gerador de progressões
+│   └── LibraryScreen.js    # Ecrã de biblioteca: progressões guardadas
+└── components/
+    └── SmartphoneFrame.js  # Componente que simula a moldura do telemóvel
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 🚀 Como correr localmente
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Pré-requisitos
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- [Node.js](https://nodejs.org/) (v18 ou superior)
+- npm (incluído com o Node.js)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Instalação (Arch Linux)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+sudo pacman -S nodejs npm
+```
 
-## Learn More
+### Passos
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+# 1. Clonar / extrair o projeto
+unzip IHC_Proj_P2_53394_55019_55047.zip
+cd genjazzui
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+# 2. Instalar dependências
+npm install
 
-### Code Splitting
+# 3. Instalar dependências adicionais (se necessário)
+npm install @clerk/clerk-react react-router-dom
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+# 4. Iniciar a app
+npm start
+```
 
-### Analyzing the Bundle Size
+A app abre automaticamente em `http://localhost:3000`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+## 🔑 Autenticação
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+A autenticação é gerida pela plataforma **Clerk**.
 
-### Advanced Configuration
+- Fazer login com conta **Microsoft da UBI** (@ubi.pt)
+- **Não** criar contas com Sign Up
+- **Não** usar contas Google
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## 🌐 API — Endpoints utilizados
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Base URL: `https://genjazz-api.fly.dev`
 
-### `npm run build` fails to minify
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| GET | `/api/keys` | Lista de tonalidades disponíveis |
+| GET | `/api/structures` | Lista de estruturas formais |
+| GET | `/api/modulations` | Lista de tipos de modulação |
+| GET | `/api/generate/:key/:structure/:modulation` | Gera progressão harmónica |
+| GET | `/api/chords2mp3/:progression` | Converte progressão em MP3 |
+| GET | `/audio/:filename` | Acede ao ficheiro MP3 |
+| POST | `/api/chords/:email/:chords/:key/:structure/:modulation` | Guarda progressão |
+| GET | `/api/chords/user/:email` | Lista progressões guardadas |
+| DELETE | `/api/chords/:email/:id` | Apaga progressão guardada |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# IHC_projeto_pratica
+---
+
+## 📱 Funcionalidades
+
+- [x] Autenticação com conta institucional (Clerk + Microsoft)
+- [x] Geração de progressões de jazz (tonalidade, estrutura, modulação)
+- [x] Reprodução de áudio (MP3) da progressão gerada
+- [x] Guardar progressões
+- [x] Listar progressões guardadas
+- [x] Apagar progressões guardadas
+- [x] Interface mobile simulada (SmartphoneFrame 360×720px)
+
+---
+
+## 🤖 AI Disclaimer
+
+*(A preencher conforme o enunciado — indicar quais ferramentas de IA foram usadas, de que forma e em que partes do desenvolvimento)*
+
+---
+
+## 📝 Alterações ao protótipo (Parte 1)
+
+*(A preencher — indicar as alterações efetuadas ao protótipo Figma e justificá-las)*
+
+---
+
+## 📦 Entrega
+
+Ficheiro: `IHC_Proj_P2_53394_55019_55047.zip`
+Prazo: **31 de maio de 2026, 23:59**
