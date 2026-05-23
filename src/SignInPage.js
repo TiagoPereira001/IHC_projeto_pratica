@@ -1,6 +1,5 @@
 import { SignIn } from "@clerk/clerk-react";
 import SmartphoneFrame from "./components/SmartphoneFrame";
-
 function SignInPage() {
   return (
     <SmartphoneFrame>

@@ -11,9 +11,9 @@ Universidade da Beira Interior — Faculdade de Engenharia, Departamento de Info
 
 | Nº Aluno | Nome |
 |----------|------|
-| 53394    | ...  |
-| 55019    | ...  |
-| 55047    | ...  |
+| 53394    | Felipe Fogaça   |
+| 55019    | Tiago Pereira   |
+| 55047    | Afonso Esteves  |
 
 ---
 
