@@ -5,6 +5,9 @@ function SignInPage() {
   return (
     <SmartphoneFrame>
       <SignIn
+        routing="path"
+        path="/sign-in"
+        afterSignInUrl="/"
         appearance={{
           elements: {
             rootBox: {
