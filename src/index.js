@@ -4,7 +4,7 @@ import App from "./App";
 
 import { ClerkProvider } from "@clerk/clerk-react";
 
-const PUBLISHABLE_KEY = "pk_test_c3Rhci1mbGFtaW5nby0zMy5jbGVyay5hY2NvdW50cy5kZXYk";
+const PUBLISHABLE_KEY = "pk_test_YnJpZ2h0LWNpY2FkYS0yNi5jbGVyay5hY2NvdW50cy5kZXYk";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -13,3 +13,5 @@ root.render(
     <App />
   </ClerkProvider>
 );
+
+

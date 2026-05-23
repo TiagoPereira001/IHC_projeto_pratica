@@ -41,7 +41,11 @@ function WelcomeScreen (){
       </div>
 
       {/*vai ser o subtitulo*/}
-      <p style = {{color:"c8d8b0", fontSize: "13px", textAlign:"center"}}>
+      <p style = {{
+        color:"c8d8b0",
+        fontSize: "13px",
+        textAlign:"center"
+      }}>
         Antes de continuar, tem que fazer login
       </p>
 
@@ -62,25 +66,6 @@ function WelcomeScreen (){
       }}>
         entrar
       </Link>
-    </div>
-  );
-}
-
-function UserProfile() {
-  const { user } = useUser();
-
-  if (!user) return null;
-
-  return (
-    <div>
-      <img
-        src={user.imageUrl}
-        alt="avatar"
-        style={{ width: 80, borderRadius: "50%" }}
-      />
-
-      <h2>{user.firstName} {user.lastName}</h2>
-      <p>{user.primaryEmailAddress.emailAddress}</p>
     </div>
   );
 }
