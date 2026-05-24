@@ -212,11 +212,11 @@ function WebserviceTestForm() {
   // -----------------------------
   // Generate progression
   // -----------------------------
-  const generateProgression = async () => {
+  const generateProgression = async (forceKey, forceStructure, forceModulation) => {
     try {
-      const key = selectedKey || "Random";
-      const structure = selectedStructure || "Random";
-      const modulation = selectedModulation || "Random";
+      const key        = forceKey        || selectedKey        || "Random";
+      const structure  = forceStructure  || selectedStructure  || "Random";
+      const modulation = forceModulation || selectedModulation || "Random";
 
       const res = await fetch(
         `${BASE_URL}/api/generate/${key}/${structure}/${modulation}`
@@ -385,74 +385,151 @@ function WebserviceTestForm() {
         padding: "16px"
       }}>
 
-{/*inicio*/}
-{tab === "home" && (
-  <div>
-    {/* roda das tonalidades */}
-    <div style={{
-      display:"flex",
-      justifyContent:"center",
-      marginBottom:"4px"
-    }}>
-    <ChordWheel
-      selectedKey={selectedKey}
-      onSelectKey={setSelectedKey}
-    />
-  </div>
-    <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
-      <div style={{ flex: 1 }}>
-        <p style={{
-          fontSize: "11px",
-          color: C.muted,
-          margin: "0 0 4px 0"
-        }}>Estrutura</p>
-        <select value={selectedStructure}
-          onChange={e => setSelectedStructure(e.target.value)}
-          style={{ ...selectStyle, width: "100%" }}>
-          {structures.map(s => <option key={s} value={s}>{s}</option>)}
-        </select>
-      </div>
+        {/*inicio*/}
+        {tab === "home" && (
+          <div>
+            {/* roda das tonalidades */}
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: "4px" }}>
+              <ChordWheel
+                selectedKey={selectedKey}
+                onSelectKey={setSelectedKey}
+              />
+            </div>
 
-      <div style={{ flex: 1 }}>
-        <p style={{
-          fontSize: "11px",
-          color: C.muted,
-          margin: "0 0 4px 0"
-        }}>Modulação</p>
-        <select value={selectedModulation}
-          onChange={e => setSelectedModulation(e.target.value)}
-          style={{ ...selectStyle, width: "100%" }}>
-          {modulations.map(m => <option key={m} value={m}>{m}</option>)}
-        </select>
-      </div>
-    </div>
+            {/* dropdowns lado a lado */}
+            <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
+              <div style={{ flex: 1 }}>
+                <p style={{
+                  fontSize: "11px",
+                  color: C.muted,
+                  margin: "0 0 4px 0"
+                }}>Estrutura</p>
+                <select value={selectedStructure}
+                  onChange={e => setSelectedStructure(e.target.value)}
+                  style={{ ...selectStyle, width: "100%" }}>
+                  {structures.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
 
-    <button onClick={generateProgression} style={{
-      ...btnStyle,
-      marginTop: "16px",
-      width: "100%",
-      fontSize: "14px"
-    }}>
-      Gerar progressao
-    </button>
+              <div style={{ flex: 1 }}>
+                <p style={{
+                  fontSize: "11px",
+                  color: C.muted,
+                  margin: "0 0 4px 0"
+                }}>Modulação</p>
+                <select value={selectedModulation}
+                  onChange={e => setSelectedModulation(e.target.value)}
+                  style={{ ...selectStyle, width: "100%" }}>
+                  {modulations.map(m => <option key={m} value={m}>{m}</option>)}
+                </select>
+              </div>
+            </div>
 
-    {/*aviso de progressao que foi criada*/}
-    {saved && (
-      <div style={{
-        marginTop: "10px",
-        padding: "10px",
-        background: "#2e5c2e",
-        border: "1px solid #4a8a4a",
-        borderRadius: "8px",
-        color: "#90ee90",
-        fontSize: "13px",
-        textAlign: "center",
-      }}>
-        ✅ Progressão criada! Vai ao tab Progressões para ouvir.
-      </div>
-    )}
-  </div>
-)}  {/* ← fim do tab home */}
+            {/* 2 botoes de gerar */}
+            <button onClick={() => generateProgression("Random", "Random", "Random")} style={{
+              ...btnStyle,
+              marginTop: "12px",
+              width: "100%",
+              fontSize: "13px",
+              background: C.bgCard,
+              border: `1px solid ${C.border}`,
+            }}>
+              Gerar progressão aleatória
+            </button>
+
+            <button onClick={() => generateProgression()} style={{
+              ...btnStyle,
+              marginTop: "8px",
+              width: "100%",
+              fontSize: "13px",
+            }}>
+              Gerar progressao
+            </button>
+
+            {/*aviso de progressao que foi criada*/}
+            {saved && (
+              <div style={{
+                marginTop: "10px",
+                padding: "10px",
+                background: "#2e5c2e",
+                border: "1px solid #4a8a4a",
+                borderRadius: "8px",
+                color: "#90ee90",
+                fontSize: "13px",
+                textAlign: "center",
+              }}>
+                ✅ Progressão criada! Vai ao tab Progressões para ouvir.
+              </div>
+            )}
+
+            {/* progressoes recentes */}
+            {savedProgressions.length > 0 && (
+              <div style={{ marginTop: "16px" }}>
+                <div style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "8px"
+                }}>
+                  <span style={{ fontSize: "12px", color: C.muted }}>
+                    Progressões recentes
+                  </span>
+                  <button onClick={() => setTab("library")} style={{
+                    background: "none", border: "none",
+                    color: C.accent, fontSize: "11px", cursor: "pointer"
+                  }}>
+                    Ver biblioteca →
+                  </button>
+                </div>
+
+                {/* mostra as 3 mais recentes */}
+                {savedProgressions.slice(0, 3).map(p => (
+                  <div key={p.id} style={{
+                    display: "flex",
+                    alignItems: "center",
+                    background: C.bgCard,
+                    border: `1px solid ${C.border}`,
+                    borderRadius: "10px",
+                    padding: "8px 10px",
+                    marginBottom: "8px",
+                    gap: "8px",
+                  }}>
+                    {/* mini play */}
+                    <div style={{
+                      width: "36px", height: "36px", flexShrink: 0,
+                      background: C.accent, borderRadius: "6px",
+                      display: "flex", flexDirection: "column",
+                      alignItems: "center", justifyContent: "center",
+                      gap: "1px",
+                    }}>
+                      <span style={{ fontSize: "12px" }}>▶</span>
+                      <span style={{ fontSize: "8px", color: "#fff" }}>1:34</span>
+                    </div>
+
+                    {/* info */}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                        <span style={{ fontSize: "12px" }}>🎵</span>
+                        <span style={{ fontSize: "12px", fontWeight: "bold" }}>{p.key}</span>
+                        <span style={{ fontSize: "10px", color: C.muted }}>♩♩</span>
+                        <span style={{ fontSize: "11px", color: C.muted }}>{p.structure}</span>
+                      </div>
+                      <div style={{ fontSize: "10px", color: C.muted, marginTop: "2px" }}>
+                        Modulação: {p.modulation} • {new Date(p.created_at).toLocaleDateString("pt-PT", {
+                          day: "2-digit", month: "2-digit",
+                          hour: "2-digit", minute: "2-digit"
+                        })}
+                      </div>
+                    </div>
+
+                    {/* seta */}
+                    <span style={{ color: C.muted, fontSize: "14px" }}>›</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}  {/* ← fim do tab home */}
 
         {/*progressions*/}
         {tab === "progressions" && (
@@ -486,10 +563,10 @@ function WebserviceTestForm() {
                       background: C.bgDark,
                       border: `1px solid ${C.border}`,
                       borderRadius: "6px",
-                      padding: "4px 8px",   // ← corrigido (sem espaço)
+                      padding: "4px 8px",
                       fontSize: "12px",
                       color: "#fff",
-                      fontFamily: "'Georgia', serif", // ← corrigido
+                      fontFamily: "'Georgia', serif",
                     }}>
                       {chord.trim()}
                     </span>
@@ -498,9 +575,9 @@ function WebserviceTestForm() {
 
                 <div style={{
                   display: "flex",
-                  gap: "8px"  // ← corrigido (sem espaço)
+                  gap: "8px"
                 }}>
-                  <button onClick={convertToMp3} style={{  // ← corrigido (onClick)
+                  <button onClick={convertToMp3} style={{
                     ...btnStyle,
                     flex: 1,
                     fontSize: "12px"
