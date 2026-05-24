@@ -119,7 +119,14 @@ Base URL: `https://genjazz-api.fly.dev`
 
 ## 🤖 AI Disclaimer
 
-*(A preencher conforme o enunciado — indicar quais ferramentas de IA foram usadas, de que forma e em que partes do desenvolvimento)*
+1. Ferramentas de IA utilizadas:
+Claude (modelo de linguagem da Anthropic).
+2. De que forma essas ferramentas foram utilizadas:
+A IA foi utilizada exclusivamente como assistente de apoio ao desenvolvimento.Respondendo a dúvidas, sugerindo correções e explicando conceitos. Todo o raciocínio, decisões de design, estrutura do projeto e implementação foram conduzidos pela equipa.
+3. Em que partes específicas do projeto essas ferramentas tiveram intervenção:
+Estrutura e navegação: A equipa pediu apoio na organização dos ecrãs e na integração com o Clerk.
+Componente visual — Roda das Tonalidades:foi consultada para apoiar os cálculos matemáticos dos segmentos SVG do componente da roda das tonalidades.
+Depuração: A IA foi consultada para identificar erros de sintaxe JSX e problemas de estrutura de componentes.
 
 ---
 

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useUser, UserButton } from "@clerk/clerk-react";
+import bgJazz from "./assets/bg-jazz.png";
+
 
 const BASE_URL = "https://genjazz-api.fly.dev";
 
@@ -15,10 +17,18 @@ const C = {
 };
 
 const selectStyle = {
-  width: "100%", padding: "10px",
-  background: "#3f5230", border: "1px solid #5a7040",
-  borderRadius: "8px", color: "#fff", fontSize: "13px",
+  width: "100%",
+  height: "46px",
+  padding: "11px 13px 11px 10px",
+  borderRadius: "8px",
+  border: "1px solid #5a7040",
+  background: "#FDFDFD",
+  color: "#1A1C1E",
+  fontSize: "13px",
   fontFamily: "'Georgia', serif",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
 };
 
 const btnStyle = {
@@ -323,58 +333,61 @@ function WebserviceTestForm() {
     <div style={{
       height: "100%",
       background: C.bg,
+      backgroundImage: `url(${bgJazz})`,  // ← imagem de fundo
+      backgroundSize: "cover",
+      backgroundPosition: "center bottom",
+      backgroundRepeat: "no-repeat",
       display: "flex",
       flexDirection: "column",
       fontFamily: "'Georgia', serif",
       color: "#fff",
-      overflow: "hidden",
+      overflow: "visible",
     }}>
       {/* header */}
       <div style={{
-        background: C.bgDark,
-        padding: "12px 14px 0 14px",
-        flexShrink: 0
+        padding: "32px 14px 10px 14px",
+        flexShrink: 0,
+        backdropFilter: "blur(4px)",
       }}>
+        {/* avatar + tabs na mesma linha */}
         <div style={{
           display: "flex",
-          justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: "10px"
+          gap: "8px",
         }}>
           {/* avatar do utilizador */}
           <UserButton afterSignOutUrl="/" />
 
-          <span style={{
-            fontSize: "18px",
-            color: "#fff"
+          {/*tabs*/}
+          <div style={{
+            display: "flex",
+            gap: "6px",
+            flex: 1,
+            justifyContent: "center",
           }}>
-            generative<strong>jazz</strong>
-          </span>
-        </div>
-
-        {/*tabs*/}
-        <div style={{ display: "flex" }}>
-          {[
-            ["home", "Inicio"],
-            ["progressions", "Progressoes"],
-            ["library", "Biblioteca"]
-          ].map(([id, label]) => (
-            <button key={id}
-              onClick={() => setTab(id)} style={{
-                flex: 1,
-                padding: "7px 2px",
-                background: "none",
-                border: "none",
-                borderBottom: tab === id ? "2px solid #fff" : "2px solid transparent",
-                color: tab === id ? "#fff" : C.accent,
-                fontWeight: tab === id ? "bold" : "normal",
-                fontSize: "11px",
-                cursor: "pointer",
-                fontFamily: "'Georgia', serif",
-              }}>
-              {label}
-            </button>
-          ))}
+            {[
+              ["home", "Inicio"],
+              ["progressions", "Progressoes"],
+              ["library", "Biblioteca"]
+            ].map(([id, label]) => (
+              <button key={id}
+                onClick={() => setTab(id)} style={{
+                  padding: "4px 12px",
+                  flex: 1,
+                  background: tab === id ? "#c8d8b0" : "none",
+                  border: "1px solid #c8d8b0",
+                  borderRadius: "20px",
+                  color: tab === id ? "#2e3d1f" : "#c8d8b0",
+                  fontWeight: tab === id ? "bold" : "normal",
+                  fontSize: "11px",
+                  cursor: "pointer",
+                  fontFamily: "'Georgia', serif",
+                  transition: "all 0.2s",
+                }}>
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -389,7 +402,10 @@ function WebserviceTestForm() {
         {tab === "home" && (
           <div>
             {/* roda das tonalidades */}
-            <div style={{ display: "flex", justifyContent: "center", marginBottom: "4px" }}>
+            <div style={{ 
+              display: "flex", 
+              justifyContent: "center", 
+              marginBottom: "4px" }}>
               <ChordWheel
                 selectedKey={selectedKey}
                 onSelectKey={setSelectedKey}
@@ -397,7 +413,11 @@ function WebserviceTestForm() {
             </div>
 
             {/* dropdowns lado a lado */}
-            <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
+            <div style={{ 
+              display: "flex", 
+              gap: "8px", 
+              marginTop: "12px" 
+              }}>
               <div style={{ flex: 1 }}>
                 <p style={{
                   fontSize: "11px",
@@ -431,17 +451,29 @@ function WebserviceTestForm() {
               marginTop: "12px",
               width: "100%",
               fontSize: "13px",
-              background: C.bgCard,
-              border: `1px solid ${C.border}`,
+              background: "#fff",
+              border: "none",
+              color: "#000",
+              borderRadius: "12px",
+              alignItems: "center",
+              gap: "10px",
+              padding: "10px 24px",
             }}>
               Gerar progressão aleatória
             </button>
 
             <button onClick={() => generateProgression()} style={{
               ...btnStyle,
-              marginTop: "8px",
+              marginTop: "12px",
               width: "100%",
               fontSize: "13px",
+              background: "#2E4A2C",
+              border: "none",
+              color: "#fff",
+              borderRadius: "12px",
+              alignItems: "center",
+              gap: "10px",
+              padding: "10px 24px",
             }}>
               Gerar progressao
             </button>
@@ -464,19 +496,27 @@ function WebserviceTestForm() {
 
             {/* progressoes recentes */}
             {savedProgressions.length > 0 && (
-              <div style={{ marginTop: "16px" }}>
+              <div style={{ 
+                marginTop: "16px" 
+                }}>
                 <div style={{
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
                   marginBottom: "8px"
                 }}>
-                  <span style={{ fontSize: "12px", color: C.muted }}>
+                  <span style={{ 
+                    fontSize: "12px", 
+                    color: "#fff" 
+                    }}>
                     Progressões recentes
                   </span>
                   <button onClick={() => setTab("library")} style={{
-                    background: "none", border: "none",
-                    color: C.accent, fontSize: "11px", cursor: "pointer"
+                    background: "none",
+                    border: "none",
+                    color: "#fff",
+                    fontSize: "11px",
+                    cursor: "pointer"
                   }}>
                     Ver biblioteca →
                   </button>
@@ -487,34 +527,71 @@ function WebserviceTestForm() {
                   <div key={p.id} style={{
                     display: "flex",
                     alignItems: "center",
-                    background: C.bgCard,
+                    background: "#fff",
                     border: `1px solid ${C.border}`,
                     borderRadius: "10px",
+                    color: "#000",
                     padding: "8px 10px",
                     marginBottom: "8px",
                     gap: "8px",
                   }}>
                     {/* mini play */}
                     <div style={{
-                      width: "36px", height: "36px", flexShrink: 0,
-                      background: C.accent, borderRadius: "6px",
-                      display: "flex", flexDirection: "column",
-                      alignItems: "center", justifyContent: "center",
+                      width: "36px",
+                      height: "36px",
+                      flexShrink: 0,
+                      background: C.accent,
+                      borderRadius: "6px",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
                       gap: "1px",
                     }}>
-                      <span style={{ fontSize: "12px" }}>▶</span>
-                      <span style={{ fontSize: "8px", color: "#fff" }}>1:34</span>
+                      <span style={{ 
+                        fontSize: "12px" 
+                        }}>▶</span>
+                      <span style={{ 
+                        fontSize: "8px", 
+                        color: "#fff" 
+                        }}></span>
                     </div>
 
                     {/* info */}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                        <span style={{ fontSize: "12px" }}>🎵</span>
-                        <span style={{ fontSize: "12px", fontWeight: "bold" }}>{p.key}</span>
-                        <span style={{ fontSize: "10px", color: C.muted }}>♩♩</span>
-                        <span style={{ fontSize: "11px", color: C.muted }}>{p.structure}</span>
+                    <div style={{
+                      flex: 1,
+                      minWidth: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}>
+                      <div style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px"
+                      }}>
+                        <span style={{ 
+                          fontSize: "12px" 
+                          }}>🎵</span>
+                        <span style={{ 
+                          fontSize: "12px", 
+                          fontWeight: "bold", 
+                          color: "#000" 
+                          }}>{p.key}</span>
+                        <span style={{ 
+                          fontSize: "10px", 
+                          color: "#000" 
+                          }}>♩♩</span>
+                        <span style={{ 
+                          fontSize: "11px", 
+                          color: "#000" 
+                          }}>{p.structure}</span>
                       </div>
-                      <div style={{ fontSize: "10px", color: C.muted, marginTop: "2px" }}>
+                      <div style={{
+                        fontSize: "10px",
+                        color: "#000",
+                        marginTop: "2px",
+                      }}>
                         Modulação: {p.modulation} • {new Date(p.created_at).toLocaleDateString("pt-PT", {
                           day: "2-digit", month: "2-digit",
                           hour: "2-digit", minute: "2-digit"
@@ -535,22 +612,14 @@ function WebserviceTestForm() {
         {tab === "progressions" && (
           <div>
             <p style={{
-              fontSize: "12px",
-              color: C.muted,
-              margin: "0 0 10px 0"
+              fontSize: "14px",
+              color: "#fff",
+              margin: "0 0 12px 0"
             }}>Ultima progressao criada</p>
 
             {/* gera o resultado */}
             {progression ? (
-              <div style={cardStyle}>
-                <p style={{
-                  fontSize: "11px",
-                  color: C.muted,
-                  margin: "0 0 6px 0"
-                }}>
-                  Tonalidade: <strong style={{ color: "#fff" }}>{progression.key}</strong>
-                </p>
-
+              <div>
                 {/* acordes como blocos invidiauis como pusemos no figma*/}
                 <div style={{
                   display: "flex",
@@ -560,12 +629,13 @@ function WebserviceTestForm() {
                 }}>
                   {progression.chords.split("|").map((chord, i) => (
                     <span key={i} style={{
-                      background: C.bgDark,
-                      border: `1px solid ${C.border}`,
-                      borderRadius: "6px",
-                      padding: "4px 8px",
-                      fontSize: "12px",
-                      color: "#fff",
+                      background: i === 1 ? "#fff" : "rgba(255,255,255,0.15)",
+                      border: "1px solid rgba(255,255,255,0.3)",
+                      borderRadius: "8px",
+                      padding: "10px 14px",
+                      fontSize: "13px",
+                      fontWeight: "bold",
+                      color: i === 1 ? "#2e3d1f" : "#fff",
                       fontFamily: "'Georgia', serif",
                     }}>
                       {chord.trim()}
@@ -575,22 +645,42 @@ function WebserviceTestForm() {
 
                 <div style={{
                   display: "flex",
-                  gap: "8px"
+                  alignItems: "center",
+                  gap: "8px",
+                  background: "rgba(255,255,255,0.1)",
+                  borderRadius: "10px",
+                  padding: "10px 12px",
+                  marginBottom: "12px",
                 }}>
+                  {/* botao play */}
                   <button onClick={convertToMp3} style={{
-                    ...btnStyle,
+                    width: "32px",
+                    height: "32px",
+                    background: C.accent,
+                    border: "none",
+                    borderRadius: "50%",
+                    color: "#fff",
+                    fontSize: "12px",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}>▶</button>
+                  {/* barra de tempo */}
+                  <div style={{
                     flex: 1,
-                    fontSize: "12px"
+                    height: "3px",
+                    background: "rgba(255,255,255,0.2)",
+                    borderRadius: "2px",
                   }}>
-                    Ouvir
-                  </button>
-                  <button onClick={saveProgression} style={{
-                    ...btnStyle,
-                    flex: 1,
-                    fontSize: "12px"
-                  }}>
-                    guardar
-                  </button>
+                    <div style={{
+                      width: "30%",
+                      height: "100%",
+                      background: C.muted,
+                      borderRadius: "2px",
+                    }} />
+                  </div>
                 </div>
 
                 {/* Audio */}
@@ -598,9 +688,99 @@ function WebserviceTestForm() {
                   <audio controls src={audioUrl}
                     style={{
                       width: "100%",
-                      marginTop: "12px",
+                      marginTop: "0",
                       height: "36px",
+                      marginBottom: "12px",
                     }} />
+                )}
+
+                {/* botao salvar progressao */}
+                <button onClick={saveProgression} style={{
+                  ...btnStyle,
+                  width: "100%",
+                  fontSize: "14px",
+                  padding: "13px",
+                  background: "#2E4A2C",
+                  borderRadius: "12px",
+                  fontWeight: "bold",
+                }}>
+                  Salvar progressão
+                </button>
+
+                {/* progressoes salvas */}
+                {savedProgressions.length > 0 && (
+                  <div style={{ marginTop: "16px" }}>
+                    <div style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "8px"
+                    }}>
+                      <span style={{ fontSize: "12px", color: "#fff" }}>
+                        Progressões salvas
+                      </span>
+                      <button onClick={() => setTab("library")} style={{
+                        background: "none", border: "none",
+                        color: "#fff", fontSize: "11px", cursor: "pointer"
+                      }}>
+                        Ver biblioteca →
+                      </button>
+                    </div>
+
+                    {/* mostra as 3 mais recentes */}
+                    {savedProgressions.slice(0, 3).map(p => (
+                      <div key={p.id} style={{
+                        display: "flex",
+                        alignItems: "center",
+                        background: "#fff",
+                        borderRadius: "10px",
+                        padding: "8px 10px",
+                        marginBottom: "8px",
+                        gap: "8px",
+                      }}>
+                        {/* mini play */}
+                        <div style={{
+                          width: "36px", height: "36px", flexShrink: 0,
+                          background: C.accent, borderRadius: "6px",
+                          display: "flex", flexDirection: "column",
+                          alignItems: "center", justifyContent: "center",
+                          gap: "1px",
+                        }}>
+                          <span style={{ 
+                            fontSize: "12px",
+                            color:"#000",
+                            }}>▶</span>
+                        </div>
+
+                        {/* info */}
+                        <div style={{
+                          flex: 1, minWidth: 0,
+                          display: "flex", 
+                          flexDirection: "column",
+                          justifyContent: "center",
+                        }}>
+                          <div style={{ display: "flex", 
+                            alignItems: "center", 
+                            gap: "6px" 
+                            }}>
+                            <span style={{ fontSize: "12px" }}>🎵</span>
+                            <span style={{ fontSize: "12px", fontWeight: "bold", color: "#2e3d1f" }}>{p.key}</span>
+                            <span style={{ fontSize: "10px", color: "#666" }}>♩♩</span>
+                            <span style={{ fontSize: "11px", color: "#666" }}>{p.structure}</span>
+                          </div>
+                          <div style={{ fontSize: "10px", 
+                            color: "#666", 
+                            marginTop: "2px" 
+                            }}>
+                            Modulação: {p.modulation} • {new Date(p.created_at).toLocaleDateString("pt-PT", {
+                              day: "2-digit", month: "2-digit",
+                              hour: "2-digit", minute: "2-digit"
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </div>
             ) : (
