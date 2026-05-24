@@ -42,7 +42,7 @@ function WelcomeScreen (){
 
       {/*vai ser o subtitulo*/}
       <p style = {{
-        color:"c8d8b0",
+        color:"#c8d8b0",
         fontSize: "13px",
         textAlign:"center"
       }}>
@@ -74,12 +74,10 @@ function Home() {
   return (
     <SmartphoneFrame>
       <SignedOut>
-        <h2>Não estas dentro</h2>
-        <Link to="/sign-in">login</Link>
+        <WelcomeScreen />
       </SignedOut>
 
       <SignedIn>
-        <UserButton />
         <WebserviceTestForm/>
       </SignedIn>
     </SmartphoneFrame>
