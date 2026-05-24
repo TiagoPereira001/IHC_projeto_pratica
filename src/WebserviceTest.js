@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useUser } from "@clerk/clerk-react";
+import { useUser, UserButton } from "@clerk/clerk-react";
 
 const BASE_URL = "https://genjazz-api.fly.dev";
 
@@ -32,6 +32,110 @@ const cardStyle = {
   borderRadius: "10px", padding: "14px", marginTop: "16px",
 };
 
+// roda das tonalidades - chaves e cores
+const WHEEL_KEYS = [
+  { key: "C",  minor: "Am",  color: "#E74C3C" },
+  { key: "G",  minor: "Em",  color: "#E67E22" },
+  { key: "D",  minor: "Bm",  color: "#F39C12" },
+  { key: "A",  minor: "F#m", color: "#F1C40F" },
+  { key: "E",  minor: "C#m", color: "#2ECC71" },
+  { key: "B",  minor: "G#m", color: "#1ABC9C" },
+  { key: "Gb", minor: "Ebm", color: "#3498DB" },
+  { key: "Db", minor: "Bbm", color: "#2980B9" },
+  { key: "Ab", minor: "Fm",  color: "#9B59B6" },
+  { key: "Eb", minor: "Cm",  color: "#8E44AD" },
+  { key: "Bb", minor: "Gm",  color: "#E91E63" },
+  { key: "F",  minor: "Dm",  color: "#FF5722" },
+];
+
+// funcao para calcular o path de um segmento da roda
+function segmentPath(cx, cy, r1, r2, startAngle, endAngle) {
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  const x1 = cx + r2 * Math.cos(toRad(startAngle));
+  const y1 = cy + r2 * Math.sin(toRad(startAngle));
+  const x2 = cx + r2 * Math.cos(toRad(endAngle));
+  const y2 = cy + r2 * Math.sin(toRad(endAngle));
+  const x3 = cx + r1 * Math.cos(toRad(endAngle));
+  const y3 = cy + r1 * Math.sin(toRad(endAngle));
+  const x4 = cx + r1 * Math.cos(toRad(startAngle));
+  const y4 = cy + r1 * Math.sin(toRad(startAngle));
+  return `M ${x1} ${y1} A ${r2} ${r2} 0 0 1 ${x2} ${y2} L ${x3} ${y3} A ${r1} ${r1} 0 0 0 ${x4} ${y4} Z`;
+}
+
+// funcao para calcular o centro de um segmento 
+function segmentCenter(cx, cy, r, angle) {
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  return {
+    x: cx + r * Math.cos(toRad(angle)),
+    y: cy + r * Math.sin(toRad(angle)),
+  };
+}
+
+// componente da roda das tonalidades
+function ChordWheel({ selectedKey, onSelectKey }) {
+  const cx = 145, cy = 145;
+  const outerR = 130, midR = 88, innerR = 52;
+  const startOffset = -90; // começa no topo
+
+  return (
+    <svg width="290" height="290" viewBox="0 0 290 290"
+      style={{ display: "block", margin: "0 auto" }}>
+
+      {WHEEL_KEYS.map((item, i) => {
+        const startAngle = startOffset + i * 30;
+        const endAngle   = startOffset + (i + 1) * 30;
+        const midAngle   = startOffset + i * 30 + 15;
+        const isSelected = selectedKey === item.key;
+
+        const outerCenter = segmentCenter(cx, cy, (outerR + midR) / 2, midAngle);
+        const innerCenter = segmentCenter(cx, cy, (midR + innerR) / 2, midAngle);
+
+        return (
+          <g key={item.key} onClick={() => onSelectKey(item.key)}
+            style={{ cursor: "pointer" }}>
+
+            {/* segmento exterior - tonalidade major */}
+            <path
+              d={segmentPath(cx, cy, midR, outerR, startAngle, endAngle)}
+              fill={item.color}
+              opacity={isSelected ? 1 : 0.72}
+              stroke="#3a4d2a" strokeWidth="1.5"
+            />
+            <text x={outerCenter.x} y={outerCenter.y}
+              textAnchor="middle" dominantBaseline="middle"
+              fontSize="10" fontWeight="bold" fill="#fff"
+              style={{ pointerEvents: "none" }}>
+              {item.key}
+            </text>
+
+            {/* segmento interior - tonalidade minor */}
+            <path
+              d={segmentPath(cx, cy, innerR, midR, startAngle, endAngle)}
+              fill={item.color}
+              opacity={isSelected ? 0.6 : 0.35}
+              stroke="#3a4d2a" strokeWidth="1"
+            />
+            <text x={innerCenter.x} y={innerCenter.y}
+              textAnchor="middle" dominantBaseline="middle"
+              fontSize="7.5" fill="#fff"
+              style={{ pointerEvents: "none" }}>
+              {item.minor}
+            </text>
+          </g>
+        );
+      })}
+
+      {/* circulo central */}
+      <circle cx={cx} cy={cy} r={innerR}
+        fill="#3a4d2a" stroke="#5a7040" strokeWidth="1.5" />
+      <text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle"
+        fontSize="11" fontWeight="bold" fill="#c8d8b0">
+        {selectedKey || "?"}
+      </text>
+    </svg>
+  );
+}
+
 function WebserviceTestForm() {
   const { user } = useUser();
   const email = user?.primaryEmailAddress?.emailAddress;
@@ -52,6 +156,7 @@ function WebserviceTestForm() {
   const [tab, setTab] = useState("home");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [saved, setSaved] = useState(false); // ← estado do aviso de progressao criada
 
   // -----------------------------
   // Load data
@@ -121,6 +226,8 @@ function WebserviceTestForm() {
 
       setProgression(data);
       setAudioUrl(null);
+      setSaved(true);                          // ← ativa o aviso
+      setTimeout(() => setSaved(false), 3000); // ← desaparece após 3 segundos
     } catch (err) {
       setError(err.message);
     }
@@ -234,6 +341,9 @@ function WebserviceTestForm() {
           alignItems: "center",
           marginBottom: "10px"
         }}>
+          {/* avatar do utilizador */}
+          <UserButton afterSignOutUrl="/" />
+
           <span style={{
             fontSize: "18px",
             color: "#fff"
@@ -244,17 +354,21 @@ function WebserviceTestForm() {
 
         {/*tabs*/}
         <div style={{ display: "flex" }}>
-          {[["home", "Inicio"], ["library", "Biblioteca"]].map(([id, label]) => (
+          {[
+            ["home", "Inicio"],
+            ["progressions", "Progressoes"],
+            ["library", "Biblioteca"]
+          ].map(([id, label]) => (
             <button key={id}
               onClick={() => setTab(id)} style={{
                 flex: 1,
-                padding: "8px 4px",
+                padding: "7px 2px",
                 background: "none",
                 border: "none",
                 borderBottom: tab === id ? "2px solid #fff" : "2px solid transparent",
                 color: tab === id ? "#fff" : C.accent,
                 fontWeight: tab === id ? "bold" : "normal",
-                fontSize: "13px",
+                fontSize: "11px",
                 cursor: "pointer",
                 fontFamily: "'Georgia', serif",
               }}>
@@ -271,53 +385,86 @@ function WebserviceTestForm() {
         padding: "16px"
       }}>
 
-        {/*inicio*/}
-        {tab === "home" && (
+{/*inicio*/}
+{tab === "home" && (
+  <div>
+    {/* roda das tonalidades */}
+    <div style={{
+      display:"flex",
+      justifyContent:"center",
+      marginBottom:"4px"
+    }}>
+    <ChordWheel
+      selectedKey={selectedKey}
+      onSelectKey={setSelectedKey}
+    />
+  </div>
+    <div style={{ display: "flex", gap: "8px", marginTop: "12px" }}>
+      <div style={{ flex: 1 }}>
+        <p style={{
+          fontSize: "11px",
+          color: C.muted,
+          margin: "0 0 4px 0"
+        }}>Estrutura</p>
+        <select value={selectedStructure}
+          onChange={e => setSelectedStructure(e.target.value)}
+          style={{ ...selectStyle, width: "100%" }}>
+          {structures.map(s => <option key={s} value={s}>{s}</option>)}
+        </select>
+      </div>
+
+      <div style={{ flex: 1 }}>
+        <p style={{
+          fontSize: "11px",
+          color: C.muted,
+          margin: "0 0 4px 0"
+        }}>Modulação</p>
+        <select value={selectedModulation}
+          onChange={e => setSelectedModulation(e.target.value)}
+          style={{ ...selectStyle, width: "100%" }}>
+          {modulations.map(m => <option key={m} value={m}>{m}</option>)}
+        </select>
+      </div>
+    </div>
+
+    <button onClick={generateProgression} style={{
+      ...btnStyle,
+      marginTop: "16px",
+      width: "100%",
+      fontSize: "14px"
+    }}>
+      Gerar progressao
+    </button>
+
+    {/*aviso de progressao que foi criada*/}
+    {saved && (
+      <div style={{
+        marginTop: "10px",
+        padding: "10px",
+        background: "#2e5c2e",
+        border: "1px solid #4a8a4a",
+        borderRadius: "8px",
+        color: "#90ee90",
+        fontSize: "13px",
+        textAlign: "center",
+      }}>
+        ✅ Progressão criada! Vai ao tab Progressões para ouvir.
+      </div>
+    )}
+  </div>
+)}  {/* ← fim do tab home */}
+
+        {/*progressions*/}
+        {tab === "progressions" && (
           <div>
             <p style={{
-              fontSize: "11px",
+              fontSize: "12px",
               color: C.muted,
-              margin: "0 0 4px 0"
-            }}>Tonalidade</p>
-            <select value={selectedKey}
-              onChange={e => setSelectedKey(e.target.value)}
-              style={selectStyle}>
-              {keys.map(k => <option key={k} value={k}>{k}</option>)}
-            </select>
-
-            <p style={{
-              fontSize: "11px",
-              color: C.muted,
-              margin: "12px 0 4px 0"
-            }}>Estrutura</p>
-            <select value={selectedStructure}
-              onChange={e => setSelectedStructure(e.target.value)}
-              style={selectStyle}>
-              {structures.map(s => <option key={s} value={s}>{s}</option>)}
-            </select>
-
-            <p style={{
-              fontSize: "11px",
-              color: C.muted,
-              margin: "12px 0 4px 0"
-            }}>Modulação</p>
-            <select value={selectedModulation}
-              onChange={e => setSelectedModulation(e.target.value)}
-              style={selectStyle}>
-              {modulations.map(m => <option key={m} value={m}>{m}</option>)}
-            </select>
-
-            <button onClick={generateProgression} style={{
-              ...btnStyle,
-              marginTop: "16px",
-              width: "100%",
-              fontSize: "14px"
-            }}>
-              Gerar progressao
-            </button>
+              margin: "0 0 10px 0"
+            }}>Ultima progressao criada</p>
 
             {/* gera o resultado */}
-            {progression && (
+            {progression ? (
               <div style={cardStyle}>
                 <p style={{
                   fontSize: "11px",
@@ -326,16 +473,34 @@ function WebserviceTestForm() {
                 }}>
                   Tonalidade: <strong style={{ color: "#fff" }}>{progression.key}</strong>
                 </p>
-                <p style={{
-                  fontSize: "13px",
-                  wordBreak: "break-all",
-                  lineHeight: "1.7",
-                  margin: "0 0 12px 0"
+
+                {/* acordes como blocos invidiauis como pusemos no figma*/}
+                <div style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "6px",
+                  marginBottom: "12px"
                 }}>
-                  {progression.chords}
-                </p>
-                <div style={{ display: "flex", gap: "8px" }}>
-                  <button onClick={convertToMp3} style={{
+                  {progression.chords.split("|").map((chord, i) => (
+                    <span key={i} style={{
+                      background: C.bgDark,
+                      border: `1px solid ${C.border}`,
+                      borderRadius: "6px",
+                      padding: "4px 8px",   // ← corrigido (sem espaço)
+                      fontSize: "12px",
+                      color: "#fff",
+                      fontFamily: "'Georgia', serif", // ← corrigido
+                    }}>
+                      {chord.trim()}
+                    </span>
+                  ))}
+                </div>
+
+                <div style={{
+                  display: "flex",
+                  gap: "8px"  // ← corrigido (sem espaço)
+                }}>
+                  <button onClick={convertToMp3} style={{  // ← corrigido (onClick)
                     ...btnStyle,
                     flex: 1,
                     fontSize: "12px"
@@ -361,52 +526,61 @@ function WebserviceTestForm() {
                     }} />
                 )}
               </div>
+            ) : (
+              /* sem progressao criada */
+              <div style={{
+                textAlign: "center",
+                color: C.muted,
+                fontSize: "13px",
+                marginTop: "60px"
+              }}>
+                <div style={{ fontSize: "40px", marginBottom: "10px" }}>🎹</div>
+                Ainda não geraste nenhuma progressão.<br />
+                <span style={{ fontSize: "11px" }}>Vai ao Início e gera uma!</span>
+              </div>
             )}
           </div>
-        )}
+        )}  {/* ← fim do tab progressions */}
 
         {tab === "library" && (
           <div>
             {/* Cabeçalho da biblioteca */}
-            <div style={{ 
-              display: "flex", 
+            <div style={{
+              display: "flex",
               justifyContent: "space-between",
-              alignItems: "center", 
-              marginBottom: "14px" 
+              alignItems: "center",
+              marginBottom: "14px"
+            }}>
+              <span style={{
+                fontSize: "16px",
+                fontWeight: "bold",
+                color: "#fff"
               }}>
-              <span style={{ 
-                fontSize: "16px", 
-                fontWeight: "bold", 
-                color: "#fff" }}>
                 Biblioteca
               </span>
-              <span style={{ 
-                fontSize: "12px", 
-                color: C.muted }}>
+              <span style={{
+                fontSize: "12px",
+                color: C.muted
+              }}>
                 {savedProgressions.length} guardadas
               </span>
             </div>
 
             {savedProgressions.length === 0 ? (
               /* Estado vazio */
-              <div style={{ 
-                textAlign: "center", 
+              <div style={{
+                textAlign: "center",
                 color: C.muted,
-                fontSize: "13px", 
-                marginTop: "60px" 
-                }}>
-                <div style={{ 
-                  fontSize: "48px", 
-                  marginBottom: "12px", 
-                  opacity: 0.4 
-                  }}>🎷</div>
-                <p style={{ 
-                  margin: "0 0 4px 0" 
-                  }}>Ainda não tens progressões guardadas.</p>
-                <p style={{ 
-                  margin: 0, 
-                  fontSize: "11px" 
-                  }}>Gera e guarda uma na tab Início!</p>
+                fontSize: "13px",
+                marginTop: "60px"
+              }}>
+                <div style={{
+                  fontSize: "48px",
+                  marginBottom: "12px",
+                  opacity: 0.4
+                }}>🎷</div>
+                <p style={{ margin: "0 0 4px 0" }}>Ainda não tens progressões guardadas.</p>
+                <p style={{ margin: 0, fontSize: "11px" }}>Gera e guarda uma na tab Início!</p>
               </div>
             ) : (
               savedProgressions.map(p => (
@@ -429,55 +603,39 @@ function WebserviceTestForm() {
                     alignItems: "center", justifyContent: "center",
                     cursor: "pointer", gap: "2px",
                   }}>
-                    <span style={{ 
-                      fontSize: "16px" 
-                      }}>▶</span>
-                    <span style={{ 
-                      fontSize: "9px", 
-                      color: "#fff" 
-                      }}>1:34</span>
+                    <span style={{ fontSize: "16px" }}>▶</span>
+                    <span style={{ fontSize: "9px", color: "#fff" }}>1:34</span>
                   </div>
 
                   {/* Info central */}
-                  <div style={{ 
-                    flex: 1, 
-                    minWidth: 0 
-                    }}>
+                  <div style={{
+                    flex: 1,
+                    minWidth: 0
+                  }}>
 
                     {/* Linha 1: nota + tonalidade + estrutura */}
-                    <div style={{ 
-                      display: "flex", 
-                      alignItems: "center", 
+                    <div style={{
+                      display: "flex",
+                      alignItems: "center",
                       gap: "6px",
-                      marginBottom: "4px" 
+                      marginBottom: "4px"
+                    }}>
+                      <span style={{ fontSize: "13px" }}>🎵</span>
+                      <span style={{
+                        fontSize: "13px",
+                        fontWeight: "bold",
+                        color: "#fff"
                       }}>
-                      <span style={{ 
-                        fontSize: "13px" 
-                        }}>🎵</span>
-                      <span style={{ 
-                        fontSize: "13px", 
-                        fontWeight: "bold", 
-                        color: "#fff" 
-                        }}>
                         {p.key}
                       </span>
-                      <span style={{ 
-                        fontSize: "11px", 
-                        color: C.muted 
-                        }}>♩♩</span>
-                      <span style={{ 
-                        fontSize: "12px", 
-                        color: C.muted 
-                        }}>
+                      <span style={{ fontSize: "11px", color: C.muted }}>♩♩</span>
+                      <span style={{ fontSize: "12px", color: C.muted }}>
                         {p.structure}
                       </span>
                     </div>
 
                     {/* Linha 2: modulação + data */}
-                    <div style={{ 
-                      fontSize: "11px", 
-                      color: C.muted 
-                      }}>
+                    <div style={{ fontSize: "11px", color: C.muted }}>
                       Modulação: {p.modulation} {"•"}{" "}
                       {new Date(p.created_at).toLocaleDateString("pt-PT", {
                         day: "2-digit", month: "2-digit",
@@ -500,7 +658,8 @@ function WebserviceTestForm() {
               ))
             )}
           </div>
-        )}
+        )}  {/* ← fim do tab library */}
+
       </div>
     </div>
   );
