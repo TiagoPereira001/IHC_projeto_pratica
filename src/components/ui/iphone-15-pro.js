@@ -52,6 +52,7 @@ export function Iphone15Pro({
         width="400"   /* Ajuste a largura da imagem */
         height="110"   /* Ajuste a altura da imagem */
         preserveAspectRatio="xMidYMid meet"
+        style={{ pointerEvents: "none" }} /* ← ESTA É A SOLUÇÃO */
       />
       
       {/* Definição dos Cantos Arredondados */}

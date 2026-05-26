@@ -27,3 +27,14 @@
 .App-link {
   color: #61dafb;
 }
+
+/* Ocultar a barra de scroll para Chrome, Safari e Opera */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ocultar a barra de scroll para IE, Edge e Firefox em todos os elementos */
+* {
+  -ms-overflow-style: none;  /* IE e Edge */
+  scrollbar-width: none;     /* Firefox */
+}

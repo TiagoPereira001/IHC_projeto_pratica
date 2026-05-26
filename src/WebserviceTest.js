@@ -24,21 +24,28 @@ const selectStyle = {
   background: "#FDFDFD",
   color: "#1A1C1E",
   fontSize: "13px",
-  fontFamily: "'Georgia', serif",
+  fontfamily: "Helvetica",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
 };
 
 const btnStyle = {
-  padding: "10px", background: "#2e3d1f",
-  color: "#fff", border: "none", borderRadius: "8px",
-  cursor: "pointer", fontFamily: "'Georgia', serif",
+  padding: "10px", 
+  background: "#2e3d1f",
+  color: "#fff", 
+  border: "none", 
+  borderRadius: "8px",
+  cursor: "pointer", 
+  fontFamily: "'Georgia', serif",
 };
 
 const cardStyle = {
-  background: "#3f5230", border: "1px solid #5a7040",
-  borderRadius: "10px", padding: "14px", marginTop: "16px",
+  background: "#3f5230", 
+  border: "1px solid #5a7040",
+  borderRadius: "10px", 
+  padding: "14px", 
+  marginTop: "16px",
 };
 
 // roda das tonalidades - chaves e cores
@@ -87,8 +94,11 @@ function ChordWheel({ selectedKey, onSelectKey }) {
   const startOffset = -90; // começa no topo
 
   return (
-    <svg width="290" height="290" viewBox="0 0 290 290"
-      style={{ display: "block", margin: "0 auto" }}>
+    <svg width="115%" height="auto" viewBox="0 0 290 290"
+      style={{ 
+        display: "block", 
+        margin: "0 auto" 
+        }}>
 
       {WHEEL_KEYS.map((item, i) => {
         const startAngle = startOffset + i * 30;
@@ -112,7 +122,7 @@ function ChordWheel({ selectedKey, onSelectKey }) {
             />
             <text x={outerCenter.x} y={outerCenter.y}
               textAnchor="middle" dominantBaseline="middle"
-              fontSize="10" fontWeight="bold" fill="#fff"
+              fontSize="20" fontWeight="bold" fill="#fff"
               style={{ pointerEvents: "none" }}>
               {item.key}
             </text>
@@ -126,7 +136,7 @@ function ChordWheel({ selectedKey, onSelectKey }) {
             />
             <text x={innerCenter.x} y={innerCenter.y}
               textAnchor="middle" dominantBaseline="middle"
-              fontSize="7.5" fill="#fff"
+              fontSize="15" fill="#fff"
               style={{ pointerEvents: "none" }}>
               {item.minor}
             </text>
@@ -138,7 +148,7 @@ function ChordWheel({ selectedKey, onSelectKey }) {
       <circle cx={cx} cy={cy} r={innerR}
         fill="#3a4d2a" stroke="#5a7040" strokeWidth="1.5" />
       <text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle"
-        fontSize="11" fontWeight="bold" fill="#c8d8b0">
+        fontSize="15" fontWeight="bold" fill="#c8d8b0">
         {selectedKey || "?"}
       </text>
     </svg>
@@ -165,7 +175,7 @@ function WebserviceTestForm() {
   const [tab, setTab] = useState("home");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [saved, setSaved] = useState(false); // ← estado do aviso de progressao criada
+  const [saved, setSaved] = useState(false); // 
 
   // -----------------------------
   // Load data
@@ -206,9 +216,10 @@ function WebserviceTestForm() {
     if (!email) return;
 
     try {
-      const res = await fetch(`${BASE_URL}/api/chords/user/${email}`);
+      const res = await fetch(`${BASE_URL}/api/chords/user/${email}?t=${Date.now()}`);
       const data = await res.json();
-      setSavedProgressions(data);
+      const sortedData = data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      setSavedProgressions(sortedData);
     } catch (err) {
       setError(err.message);
     }
@@ -221,22 +232,22 @@ function WebserviceTestForm() {
   // -----------------------------
   // Generate progression
   // -----------------------------
-  const generateProgression = async (forceKey, forceStructure, forceModulation) => {
+const generateProgression = async (forceKey, forceStructure, forceModulation) => {
     try {
       const key        = forceKey        || selectedKey        || "Random";
       const structure  = forceStructure  || selectedStructure  || "Random";
       const modulation = forceModulation || selectedModulation || "Random";
 
-      const res = await fetch(
-        `${BASE_URL}/api/generate/${key}/${structure}/${modulation}`
-      );
-
+      const res = await fetch(`${BASE_URL}/api/generate/${key}/${structure}/${modulation}`);
       const data = await res.json();
 
       setProgression(data);
       setAudioUrl(null);
-      setSaved(true);                          // ← ativa o aviso
-      setTimeout(() => setSaved(false), 3000); // ← desaparece após 3 segundos
+      setSaved(true);
+      
+      await loadSavedProgressions(); 
+      
+      setTimeout(() => setSaved(false), 3000); 
     } catch (err) {
       setError(err.message);
     }
@@ -258,6 +269,32 @@ function WebserviceTestForm() {
       setError(err.message);
     }
   };
+// -----------------------------
+  // Tocar Áudio Instantaneamente
+  // -----------------------------
+  const playChords = async (chords) => {
+    if (!chords) return;
+
+    try {
+      const encoded = encodeURIComponent(chords);
+      const res = await fetch(`${BASE_URL}/api/chords2mp3/${encoded}`);
+      const data = await res.json();
+
+      // Toca a música diretamente em background sem precisar de um <audio> tag!
+      const audio = new Audio(`${BASE_URL}${data.mp3_url}`);
+      audio.play();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  
+  const openInPlayer = (p) => {
+    setProgression(p);       // Carrega a progressão escolhida para o ecrã
+    setAudioUrl(null);       // Limpa o áudio da música anterior (se houver)
+    setTab("progressions");  // Muda a tab automaticamente
+  };
+  
 
   // -----------------------------
   // Save progression
@@ -272,9 +309,10 @@ function WebserviceTestForm() {
         body: JSON.stringify({
           email,
           chords: progression.chords,
-          key: progression.key,
-          structure: selectedStructure || "Random",
-          modulation: selectedModulation || "Random"
+          
+          key: progression.key || selectedKey || "Random",
+          structure: progression.structure || selectedStructure || "Random",
+          modulation: progression.modulation || selectedModulation || "Random"
         })
       });
 
@@ -344,7 +382,7 @@ function WebserviceTestForm() {
     }}>
       {/* header */}
       <div style={{
-        padding: "32px 14px 10px 14px",
+        padding: "80px 14px 10px 14px",
         flexShrink: 0,
         backdropFilter: "blur(4px)",
       }}>
@@ -352,26 +390,49 @@ function WebserviceTestForm() {
         <div style={{
           display: "flex",
           alignItems: "center",
-          gap: "8px",
+          gap: "12px",
         }}>
-          {/* avatar do utilizador */}
-          <UserButton afterSignOutUrl="/" />
+          
+          {/* Avatar isolado numa caixa rígida para não bloquear os botões */}
+          <div style={{ width: "40px", height: "40px", flexShrink: 0, zIndex: 10 }}>
+            <UserButton 
+              afterSignOutUrl="/"
+              appearance={{
+                elements: {
+                  userButtonAvatarBox: {
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "20px",
+                  },
+                  userButtonTrigger: {
+                    width: "40px",
+                    height: "40px",
+                  }
+                }
+              }} 
+            />
+          </div>
 
           {/*tabs*/}
           <div style={{
             display: "flex",
             gap: "6px",
-            paddingTop:"40px", 
             flex: 1,
             justifyContent: "center",
+            zIndex: 10, /* Garante que os cliques funcionam sempre */
           }}>
             {[
               ["home", "Inicio"],
               ["progressions", "Progressoes"],
               ["library", "Biblioteca"]
             ].map(([id, label]) => (
-              <button key={id}
-                onClick={() => setTab(id)} style={{
+              <div key={id}
+                onClick={() => setTab(id)} 
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxSizing: "border-box",
                   height: "40px",
                   padding: "4px 12px",
                   flex: 1,
@@ -382,11 +443,11 @@ function WebserviceTestForm() {
                   fontWeight: tab === id ? "bold" : "normal",
                   fontSize: "15px",
                   cursor: "pointer",
-                  fontFamily: "'Georgia', serif",
+                  fontFamily: "SF Pro, sans-serif", /* Corrigido de fontfamily para fontFamily */
                   transition: "all 0.2s",
                 }}>
                 {label}
-              </button>
+              </div>
             ))}
           </div>
         </div>
@@ -422,7 +483,7 @@ function WebserviceTestForm() {
             }}>
               <div style={{ flex: 1 }}>
                 <p style={{
-                  fontSize: "11px",
+                  fontSize: "20px",
                   color: C.muted,
                   margin: "0 0 4px 0"
                 }}>Estrutura</p>
@@ -435,7 +496,7 @@ function WebserviceTestForm() {
 
               <div style={{ flex: 1 }}>
                 <p style={{
-                  fontSize: "11px",
+                  fontSize: "20px",
                   color: C.muted,
                   margin: "0 0 4px 0"
                 }}>Modulação</p>
@@ -448,18 +509,24 @@ function WebserviceTestForm() {
             </div>
 
             {/* 2 botoes de gerar */}
-            <button onClick={() => generateProgression("Random", "Random", "Random")} style={{
+            <button onClick={() => generateProgression("Random", "Random", "Random")} 
+            style={{
               ...btnStyle,
               marginTop: "12px",
               width: "100%",
-              fontSize: "13px",
+              height: "48px",
+              fontSize: "14px",
               background: "#fff",
               border: "none",
+              fontFamily: "Helvetica Now Display",
               color: "#000",
               borderRadius: "12px",
               alignItems: "center",
               gap: "10px",
               padding: "10px 24px",
+              fontWeight:"500",
+              lineHeight:"140%",
+              letterspacing: "-0.14px",
             }}>
               Gerar progressão aleatória
             </button>
@@ -468,14 +535,20 @@ function WebserviceTestForm() {
               ...btnStyle,
               marginTop: "12px",
               width: "100%",
-              fontSize: "13px",
-              background: "#2E4A2C",
+              height: "48px",
+              fontSize: "14px",
+              background: "#fff",
               border: "none",
+              background: "#2e3d1f",
+              fontFamily: "Helvetica Now Display",
               color: "#fff",
               borderRadius: "12px",
               alignItems: "center",
               gap: "10px",
               padding: "10px 24px",
+              fontWeight:"500",
+              lineHeight:"140%",
+              letterspacing: "-0.14px",
             }}>
               Gerar progressao
             </button>
@@ -489,7 +562,7 @@ function WebserviceTestForm() {
                 border: "1px solid #4a8a4a",
                 borderRadius: "8px",
                 color: "#90ee90",
-                fontSize: "13px",
+                fontSize: "16px",
                 textAlign: "center",
               }}>
                 ✅ Progressão criada! Vai ao tab Progressões para ouvir.
@@ -507,15 +580,22 @@ function WebserviceTestForm() {
                   alignItems: "center",
                   marginBottom: "8px"
                 }}>
-                  <span style={{ fontSize: "12px", color: "#fff" }}>
+                  <span style={{ 
+                    fontSize: "19px", 
+                    color: "#fff",
+                    fontfamily: "Inter",
+                    fontWeight:"400",
+                    }}>
                     Progressões recentes
                   </span>
                   <button onClick={() => setTab("library")} style={{
                     background: "none",
                     border: "none",
                     color: "#fff",
-                    fontSize: "11px",
-                    cursor: "pointer"
+                    fontfamily: "Inter",
+                    fontSize: "19px ",
+                    cursor: "pointer",
+                    fontWeight:"400",
                   }}>
                     Ver biblioteca →
                   </button>
@@ -525,64 +605,87 @@ function WebserviceTestForm() {
                 {savedProgressions.slice(0, 3).map(p => (
                   <div key={p.id} style={{
                     display: "flex",
-                    alignItems: "center",
+                    height: "69px",              
+                    alignItems: "center",         
                     background: "#fff",
                     border: `1px solid ${C.border}`,
                     borderRadius: "10px",
-                    color: "#000",
-                    padding: "8px 10px",
-                    marginBottom: "8px",
-                    gap: "8px",
+                    padding: "0 14px",            
+                    marginBottom: "10px",
+                    gap: "14px",                  
+                    boxSizing: "border-box",
                   }}>
-                    {/* mini play */}
-                    <div style={{
-                      width: "36px",
-                      height: "36px",
-                      flexShrink: 0,
-                      background: C.accent,
-                      borderRadius: "6px",
+                    
+                    {/* Botão Play */}
+                    <button onClick={() => openInPlayer(p)} style={{
+                      width: "44px",              
+                      height: "44px",
+                      padding: 0,
+                      background: "#2e3d1f",
+                      border: "2px solid #c8d8b0",
+                      borderRadius: "50%",
+                      color: "#fff",
+                      cursor: "pointer",
                       display: "flex",
-                      flexDirection: "column",
                       alignItems: "center",
                       justifyContent: "center",
-                      gap: "1px",
+                      flexShrink: 0,
                     }}>
-                      <span style={{ fontSize: "12px" }}>▶</span>
-                      <span style={{ fontSize: "8px", color: "#fff" }}>1:34</span>
-                    </div>
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        width="18" 
+                        height="18" 
+                        viewBox="0 0 24 24" 
+                        fill="currentColor" 
+                        stroke="currentColor" 
+                        strokeWidth="1" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                        style={{ marginLeft: "2px" }} 
+                      >
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                      </svg>
+                    </button>
 
-                    {/* info */}
+                    {/* Bloco de Informação (Texto) */}
                     <div style={{
-                      flex: 1,
-                      minWidth: 0,
                       display: "flex",
                       flexDirection: "column",
                       justifyContent: "center",
+                      gap: "10px",                 
+                      flex: 1,
+                      minWidth: 0,
                     }}>
+                      
+                      {/* Linha 1: 🎵 C ♩♩ AABA */}
                       <div style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: "6px"
+                        gap: "8px"               
                       }}>
-                        <span style={{ fontSize: "12px" }}>🎵</span>
-                        <span style={{ fontSize: "12px", fontWeight: "bold", color: "#000" }}>{p.key}</span>
-                        <span style={{ fontSize: "10px", color: "#000" }}>♩♩</span>
-                        <span style={{ fontSize: "11px", color: "#000" }}>{p.structure}</span>
+                        <span style={{ fontSize: "16px", color: "#000" }}>🎵</span>
+                        <span style={{ fontSize: "16px", fontWeight: "bold", color: "#000" }}>
+                          {p.key}
+                        </span>
+                        <span style={{ fontSize: "16px", color: "#666" }}>♩♩</span>
+                        <span style={{ fontSize: "16px", color: "#000" }}>
+                          {p.structure}
+                        </span>
                       </div>
+
+                      {/* Linha 2: Modulação e Data */}
                       <div style={{
-                        fontSize: "10px",
-                        color: "#000",
-                        marginTop: "2px",
+                        fontSize: "12px",
+                        color: "#666",
+                        letterSpacing: "0.2px",
                       }}>
                         Modulação: {p.modulation} • {new Date(p.created_at).toLocaleDateString("pt-PT", {
                           day: "2-digit", month: "2-digit",
                           hour: "2-digit", minute: "2-digit"
                         })}
                       </div>
+                      
                     </div>
-
-                    {/* seta */}
-                    <span style={{ color: C.muted, fontSize: "14px" }}>›</span>
                   </div>
                 ))}
               </div>
@@ -633,24 +736,37 @@ function WebserviceTestForm() {
                   marginBottom: "12px",
                 }}>
                   {/*botao play*/}
-                  <button onClick={convertToMp3} style={{
+                  <button onClick={() => playChords(progression.chords)} style={{
                     width: "48px",
                     height: "48px",
+                    padding: 0,
                     background: C.accent,
                     border: "2px solid #c8d8b0",
                     borderRadius: "50%",
                     color: "#fff",
-                    fontSize: "16px",
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     flexShrink: 0,
-                  }}>S
-                    ▶
+                    transition: "transform 0.1s", 
+                  }}>
+                    {/* Ícone SVG Play */}
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      width="20" 
+                      height="20" 
+                      viewBox="0 0 24 24" 
+                      fill="currentColor" 
+                      stroke="currentColor" 
+                      strokeWidth="1" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                      style={{ marginLeft: "2px" }}
+                    >
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
                   </button>
-
-
                   {/*caixa do tempo com a borda*/}
                   <div style={{
                     flex: 1,
@@ -729,14 +845,24 @@ function WebserviceTestForm() {
                       }}>
                         {/* mini play */}
                         <div style={{
-                          width: "36px", height: "36px", flexShrink: 0,
-                          background: C.accent, borderRadius: "6px",
-                          display: "flex", flexDirection: "column",
-                          alignItems: "center", justifyContent: "center",
+                          width: "36px", 
+                          height: "36px", 
+                          flexShrink: 0,
+                          background: C.accent, 
+                          borderRadius: "6px",
+                          display: "flex", 
+                          flexDirection: "column",
+                          alignItems: "center", 
+                          justifyContent: "center",
                           gap: "1px",
                         }}>
-                          <span style={{ fontSize: "12px", color: "#fff" }}>▶</span>
-                          <span style={{ fontSize: "8px", color: "#fff" }}>1:34</span>
+                          <span style={{ 
+                            fontSize: "12px", 
+                            color: "#fff" 
+                            }}>▶</span>
+                          <span style={{ 
+                            fontSize: "8px", 
+                            color: "#fff" }}></span>
                         </div>
 
                         {/* info */}
@@ -782,6 +908,7 @@ function WebserviceTestForm() {
           </div>
         )}  {/* ← fim do tab progressions */}
 
+        {/* Biblioteca */}
         {tab === "library" && (
           <div>
             {/* Cabeçalho da biblioteca */}
@@ -836,7 +963,7 @@ function WebserviceTestForm() {
                 }}>
 
                   {/* Botão play à esquerda */}
-                  <div style={{
+                  <div onClick={() => openInPlayer(p)} style={{
                     width: "48px", height: "48px", flexShrink: 0,
                     background: C.accent, borderRadius: "8px",
                     display: "flex", flexDirection: "column",
@@ -844,7 +971,7 @@ function WebserviceTestForm() {
                     cursor: "pointer", gap: "2px",
                   }}>
                     <span style={{ fontSize: "16px" }}>▶</span>
-                    <span style={{ fontSize: "9px", color: "#fff" }}>1:34</span>
+                    <span style={{ fontSize: "9px", color: "#fff" }}></span>
                   </div>
 
                   {/* Info central */}
