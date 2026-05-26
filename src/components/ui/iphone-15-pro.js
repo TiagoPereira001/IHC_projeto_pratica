@@ -1,0 +1,65 @@
+import React from "react";
+import dynamicIsland from "../../assets/Status_bar.png";
+
+export function Iphone15Pro({
+  width = 433,
+  height = 882,
+  children,
+  ...props
+}) {
+  return (
+    <svg
+      aria-label="iPhone 15 Pro"
+      fill="none"
+      height={height}
+      role="img"
+      viewBox="0 0 433 882"
+      width={width}
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      {/* Corpo do Telemóvel */}
+      <path fill="#000000" d="M2 73C2 32.6832 34.6832 0 75 0H357C397.317 0 430 32.6832 430 73V809C430 849.317 397.317 882 357 882H75C34.6832 882 2 849.317 2 809V73Z" />
+      <path fill="#000000" d="M0 171C0 170.448 0.447715 170 1 170H3V204H1C0.447715 204 0 203.552 0 203V171Z" />
+      <path fill="#000000" d="M1 234C1 233.448 1.44772 233 2 233H3.5V300H2C1.44772 300 1 299.552 1 299V234Z" />
+      <path fill="#000000" d="M1 319C1 318.448 1.44772 318 2 318H3.5V385H2C1.44772 385 1 384.552 1 384V319Z" />
+      <path fill="#000000" d="M430 279H432C432.552 279 433 279.448 433 280V384C433 384.552 432.552 385 432 385H430V279Z" />
+      <path fill="black" d="M6 74C6 35.3401 37.3401 4 76 4H356C394.66 4 426 35.3401 426 74V808C426 846.66 394.66 878 356 878H76C37.3401 878 6 846.66 6 808V74Z" />
+      <path fill="#000000" opacity="0.5" d="M174 5H258V5.5C258 6.60457 257.105 7.5 256 7.5H176C174.895 7.5 174 6.60457 174 5.5V5Z" />
+      <path fill="#000000" stroke="#000000" strokeWidth="0.5" d="M21.25 75C21.25 44.2101 46.2101 19.25 77 19.25H355C385.79 19.25 410.75 44.2101 410.75 75V807C410.75 837.79 385.79 862.75 355 862.75H77C46.2101 862.75 21.25 837.79 21.25 807V75Z" />
+
+      {/* Fundo Preto Base */}
+      <rect fill="#000000" height="843.5" rx="55.75" ry="55.75" width="389.5" x="21.25" y="19.25" />
+
+      {/* ÁREA DO ECRÃ (Onde a sua App vai aparecer) */}
+      <foreignObject   
+        clipPath="url(#roundedCorners)"
+        height="843.5"
+        width="389.5"
+        x="21.25"
+        y="19.25"
+      >
+        <div style={{ width: '100%', height: '100%', overflowY: 'auto', backgroundColor: 'black' }}>
+          {children}
+        </div>
+      </foreignObject>
+
+      {/* Dynamic Island / Notch do iPhone */}
+     <image
+        href={dynamicIsland}
+        x="13"       /* Ajuste horizontal (esquerda/direita) */
+        y="0"        /* Ajuste vertical (cima/baixo) */
+        width="400"   /* Ajuste a largura da imagem */
+        height="110"   /* Ajuste a altura da imagem */
+        preserveAspectRatio="xMidYMid meet"
+      />
+      
+      {/* Definição dos Cantos Arredondados */}
+      <defs>
+        <clipPath id="roundedCorners">
+          <rect height="843.5" rx="55.75" ry="55.75" width="389.5" x="21.25" y="19.25" />
+        </clipPath>
+      </defs>
+    </svg>
+  );
+}

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useUser, UserButton } from "@clerk/clerk-react";
 import bgJazz from "./assets/bg-jazz.png";
 
-
 const BASE_URL = "https://genjazz-api.fly.dev";
 
 // fazer a paleta de cores que esta no figma
@@ -362,6 +361,7 @@ function WebserviceTestForm() {
           <div style={{
             display: "flex",
             gap: "6px",
+            paddingTop:"40px", 
             flex: 1,
             justifyContent: "center",
           }}>
@@ -372,6 +372,7 @@ function WebserviceTestForm() {
             ].map(([id, label]) => (
               <button key={id}
                 onClick={() => setTab(id)} style={{
+                  height: "40px",
                   padding: "4px 12px",
                   flex: 1,
                   background: tab === id ? "#c8d8b0" : "none",
@@ -379,7 +380,7 @@ function WebserviceTestForm() {
                   borderRadius: "20px",
                   color: tab === id ? "#2e3d1f" : "#c8d8b0",
                   fontWeight: tab === id ? "bold" : "normal",
-                  fontSize: "11px",
+                  fontSize: "15px",
                   cursor: "pointer",
                   fontFamily: "'Georgia', serif",
                   transition: "all 0.2s",
@@ -402,10 +403,11 @@ function WebserviceTestForm() {
         {tab === "home" && (
           <div>
             {/* roda das tonalidades */}
-            <div style={{ 
-              display: "flex", 
-              justifyContent: "center", 
-              marginBottom: "4px" }}>
+            <div style={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: "4px"
+            }}>
               <ChordWheel
                 selectedKey={selectedKey}
                 onSelectKey={setSelectedKey}
@@ -413,11 +415,11 @@ function WebserviceTestForm() {
             </div>
 
             {/* dropdowns lado a lado */}
-            <div style={{ 
-              display: "flex", 
-              gap: "8px", 
-              marginTop: "12px" 
-              }}>
+            <div style={{
+              display: "flex",
+              gap: "8px",
+              marginTop: "12px"
+            }}>
               <div style={{ flex: 1 }}>
                 <p style={{
                   fontSize: "11px",
@@ -505,10 +507,7 @@ function WebserviceTestForm() {
                   alignItems: "center",
                   marginBottom: "8px"
                 }}>
-                  <span style={{ 
-                    fontSize: "12px", 
-                    color: "#fff" 
-                    }}>
+                  <span style={{ fontSize: "12px", color: "#fff" }}>
                     Progressões recentes
                   </span>
                   <button onClick={() => setTab("library")} style={{
@@ -548,13 +547,8 @@ function WebserviceTestForm() {
                       justifyContent: "center",
                       gap: "1px",
                     }}>
-                      <span style={{ 
-                        fontSize: "12px" 
-                        }}>▶</span>
-                      <span style={{ 
-                        fontSize: "8px", 
-                        color: "#fff" 
-                        }}></span>
+                      <span style={{ fontSize: "12px" }}>▶</span>
+                      <span style={{ fontSize: "8px", color: "#fff" }}>1:34</span>
                     </div>
 
                     {/* info */}
@@ -570,22 +564,10 @@ function WebserviceTestForm() {
                         alignItems: "center",
                         gap: "6px"
                       }}>
-                        <span style={{ 
-                          fontSize: "12px" 
-                          }}>🎵</span>
-                        <span style={{ 
-                          fontSize: "12px", 
-                          fontWeight: "bold", 
-                          color: "#000" 
-                          }}>{p.key}</span>
-                        <span style={{ 
-                          fontSize: "10px", 
-                          color: "#000" 
-                          }}>♩♩</span>
-                        <span style={{ 
-                          fontSize: "11px", 
-                          color: "#000" 
-                          }}>{p.structure}</span>
+                        <span style={{ fontSize: "12px" }}>🎵</span>
+                        <span style={{ fontSize: "12px", fontWeight: "bold", color: "#000" }}>{p.key}</span>
+                        <span style={{ fontSize: "10px", color: "#000" }}>♩♩</span>
+                        <span style={{ fontSize: "11px", color: "#000" }}>{p.structure}</span>
                       </div>
                       <div style={{
                         fontSize: "10px",
@@ -643,43 +625,50 @@ function WebserviceTestForm() {
                   ))}
                 </div>
 
+                {/*aqui vai o mini player visual*/}
                 <div style={{
                   display: "flex",
                   alignItems: "center",
                   gap: "8px",
-                  background: "rgba(255,255,255,0.1)",
-                  borderRadius: "10px",
-                  padding: "10px 12px",
                   marginBottom: "12px",
                 }}>
-                  {/* botao play */}
+                  {/*botao play*/}
                   <button onClick={convertToMp3} style={{
-                    width: "32px",
-                    height: "32px",
+                    width: "48px",
+                    height: "48px",
                     background: C.accent,
-                    border: "none",
+                    border: "2px solid #c8d8b0",
                     borderRadius: "50%",
                     color: "#fff",
-                    fontSize: "12px",
+                    fontSize: "16px",
                     cursor: "pointer",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     flexShrink: 0,
-                  }}>▶</button>
-                  {/* barra de tempo */}
+                  }}>S
+                    ▶
+                  </button>
+
+
+                  {/*caixa do tempo com a borda*/}
                   <div style={{
                     flex: 1,
-                    height: "3px",
-                    background: "rgba(255,255,255,0.2)",
-                    borderRadius: "2px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    background: "rgba(255,255,255,0.1)",
+                    border: "1px solid rgba(255,255,255,0.3)",
+                    borderRadius: "8px",
+                    padding: "8px 10px",
                   }}>
-                    <div style={{
-                      width: "30%",
-                      height: "100%",
-                      background: C.muted,
-                      borderRadius: "2px",
-                    }} />
+                    {/* label tempo */}
+                    <span style={{
+                      fontSize: "11px",
+                      color: C.muted,
+                      flexShrink: 0,
+                    }}>Tempo:</span>
+
                   </div>
                 </div>
 
@@ -688,9 +677,9 @@ function WebserviceTestForm() {
                   <audio controls src={audioUrl}
                     style={{
                       width: "100%",
-                      marginTop: "0",
                       height: "36px",
                       marginBottom: "12px",
+                      marginTop: "0px",
                     }} />
                 )}
 
@@ -746,38 +735,32 @@ function WebserviceTestForm() {
                           alignItems: "center", justifyContent: "center",
                           gap: "1px",
                         }}>
-                          <span style={{ 
-                            fontSize: "12px",
-                            color:"#000",
-                            }}>▶</span>
+                          <span style={{ fontSize: "12px", color: "#fff" }}>▶</span>
+                          <span style={{ fontSize: "8px", color: "#fff" }}>1:34</span>
                         </div>
 
                         {/* info */}
                         <div style={{
                           flex: 1, minWidth: 0,
-                          display: "flex", 
-                          flexDirection: "column",
+                          display: "flex", flexDirection: "column",
                           justifyContent: "center",
                         }}>
-                          <div style={{ display: "flex", 
-                            alignItems: "center", 
-                            gap: "6px" 
-                            }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                             <span style={{ fontSize: "12px" }}>🎵</span>
                             <span style={{ fontSize: "12px", fontWeight: "bold", color: "#2e3d1f" }}>{p.key}</span>
                             <span style={{ fontSize: "10px", color: "#666" }}>♩♩</span>
                             <span style={{ fontSize: "11px", color: "#666" }}>{p.structure}</span>
                           </div>
-                          <div style={{ fontSize: "10px", 
-                            color: "#666", 
-                            marginTop: "2px" 
-                            }}>
+                          <div style={{ fontSize: "10px", color: "#666", marginTop: "2px" }}>
                             Modulação: {p.modulation} • {new Date(p.created_at).toLocaleDateString("pt-PT", {
                               day: "2-digit", month: "2-digit",
                               hour: "2-digit", minute: "2-digit"
                             })}
                           </div>
                         </div>
+
+                        {/* seta */}
+                        <span style={{ color: "#666", fontSize: "14px" }}>›</span>
                       </div>
                     ))}
                   </div>

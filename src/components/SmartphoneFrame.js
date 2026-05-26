@@ -1,11 +1,14 @@
 import "./SmartphoneFrame.css";
+// Certifique-se de que o caminho de importação está correto para a sua estrutura
+import { Iphone15Pro } from "./ui/iphone-15-pro";
 
 function SmartphoneFrame({ children }) {
   return (
     <div className="phone-wrapper">
-      <div className="phone">
-        <div className="notch"></div>
-        <div className="screen">{children}</div>
+      <div style={{ width: 320 }}>
+        <Iphone15Pro>
+          {children}
+        </Iphone15Pro>
       </div>
     </div>
   );
