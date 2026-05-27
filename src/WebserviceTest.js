@@ -663,12 +663,25 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
                         alignItems: "center",
                         gap: "8px"               
                       }}>
-                        <span style={{ fontSize: "16px", color: "#000" }}>🎵</span>
-                        <span style={{ fontSize: "16px", fontWeight: "bold", color: "#000" }}>
+                        <span style={{ 
+                          fontSize: "16px", 
+                          color: "#000" 
+                          }}>🎵</span>
+                        <span style={{ 
+                          fontSize: "16px", 
+                          fontWeight: "bold", 
+                          color: "#000" 
+                          }}>
                           {p.key}
                         </span>
-                        <span style={{ fontSize: "16px", color: "#666" }}>♩♩</span>
-                        <span style={{ fontSize: "16px", color: "#000" }}>
+                        <span style={{ 
+                          fontSize: "16px", 
+                          color: "#666" 
+                          }}>♩♩</span>
+                        <span style={{ 
+                          fontSize: "16px", 
+                          color: "#000" 
+                          }}>
                           {p.structure}
                         </span>
                       </div>
@@ -697,7 +710,8 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
         {tab === "progressions" && (
           <div>
             <p style={{
-              fontSize: "14px",
+              fontSize: "20px",
+              fontFamily: "Inter",
               color: "#fff",
               margin: "0 0 12px 0"
             }}>Ultima progressao criada</p>
@@ -705,26 +719,27 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
             {/* gera o resultado */}
             {progression ? (
               <div>
-                {/* acordes como blocos invidiauis como pusemos no figma*/}
+                {/* layout tipo figma */}
                 <div style={{
                   display: "flex",
                   flexWrap: "wrap",
-                  gap: "6px",
-                  marginBottom: "12px"
+                  gap: "10px",
+                  marginBottom: "20px",
+                  justifyContent: "center",
                 }}>
                   {progression.chords.split("|").map((chord, i) => (
-                    <span key={i} style={{
-                      background: i === 1 ? "#fff" : "rgba(255,255,255,0.15)",
-                      border: "1px solid rgba(255,255,255,0.3)",
-                      borderRadius: "8px",
-                      padding: "10px 14px",
-                      fontSize: "13px",
+                    <div key={i} style={{
+                      background: "#d6e8b0",
+                      padding:"15px 20px",
+                      borderRadius: "12px",
+                      fontSize: "14px",
                       fontWeight: "bold",
-                      color: i === 1 ? "#2e3d1f" : "#fff",
-                      fontFamily: "'Georgia', serif",
+                      color: "#2e3d1f",
+                      boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+
                     }}>
                       {chord.trim()}
-                    </span>
+                    </div>
                   ))}
                 </div>
 
@@ -735,7 +750,7 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
                   gap: "8px",
                   marginBottom: "12px",
                 }}>
-                  {/*botao play*/}
+                  {/*botao play da musica*/}
                   <button onClick={() => playChords(progression.chords)} style={{
                     width: "48px",
                     height: "48px",
@@ -812,7 +827,7 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
                   Salvar progressão
                 </button>
 
-                {/* progressoes salvas */}
+                  {/* progressoes salvas */}
                 {savedProgressions.length > 0 && (
                   <div style={{ marginTop: "16px" }}>
                     <div style={{
@@ -821,12 +836,18 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
                       alignItems: "center",
                       marginBottom: "8px"
                     }}>
-                      <span style={{ fontSize: "12px", color: "#fff" }}>
+                      <span style={{ 
+                        fontSize: "12px", 
+                        color: "#fff" 
+                        }}>
                         Progressões salvas
                       </span>
                       <button onClick={() => setTab("library")} style={{
-                        background: "none", border: "none",
-                        color: "#fff", fontSize: "11px", cursor: "pointer"
+                        background: "none", 
+                        border: "none",
+                        color: "#fff", 
+                        fontSize: "11px", 
+                        cursor: "pointer"
                       }}>
                         Ver biblioteca →
                       </button>
@@ -837,47 +858,50 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
                       <div key={p.id} style={{
                         display: "flex",
                         alignItems: "center",
-                        background: "#fff",
-                        borderRadius: "10px",
-                        padding: "8px 10px",
-                        marginBottom: "8px",
-                        gap: "8px",
+                        background: C.bgCard,
+                        border: `1px solid ${C.border}`,
+                        borderRadius: "12px",
+                        padding: "10px",
+                        marginBottom: "10px",
+                        gap: "10px",
                       }}>
-                        {/* mini play */}
-                        <div style={{
-                          width: "36px", 
-                          height: "36px", 
-                          flexShrink: 0,
-                          background: C.accent, 
-                          borderRadius: "6px",
-                          display: "flex", 
-                          flexDirection: "column",
-                          alignItems: "center", 
-                          justifyContent: "center",
-                          gap: "1px",
-                        }}>
-                          <span style={{ 
-                            fontSize: "12px", 
-                            color: "#fff" 
-                            }}>▶</span>
-                          <span style={{ 
-                            fontSize: "8px", 
-                            color: "#fff" }}></span>
-                        </div>
 
-                        {/* info */}
-                        <div style={{
-                          flex: 1, minWidth: 0,
-                          display: "flex", flexDirection: "column",
-                          justifyContent: "center",
+                        {/* Botão play à esquerda */}
+                        <button onClick={() => playChords(p.chords)} style={{
+                          width: "44px", height: "44px", flexShrink: 0,
+                          padding: 0, background: C.accent, border: "2px solid #c8d8b0",
+                          borderRadius: "50%", color: "#fff", cursor: "pointer",
+                          display: "flex", alignItems: "center", justifyContent: "center",
                         }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                            <span style={{ fontSize: "12px" }}>🎵</span>
-                            <span style={{ fontSize: "12px", fontWeight: "bold", color: "#2e3d1f" }}>{p.key}</span>
-                            <span style={{ fontSize: "10px", color: "#666" }}>♩♩</span>
-                            <span style={{ fontSize: "11px", color: "#666" }}>{p.structure}</span>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: "2px" }}>
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                          </svg>
+                        </button>
+
+                        {/* Info central da pagina progressao */}
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
+                            <span style={{ 
+                              fontSize: "13px" 
+                              }}>🎵</span>
+                            <span style={{ 
+                              fontSize: "13px", 
+                              fontWeight: "bold", 
+                              color: "#fff" 
+                              }}>{p.key}</span>
+                            <span style={{ 
+                              fontSize: "11px", 
+                              color: C.muted 
+                              }}>♩♩</span>
+                            <span style={{ 
+                              fontSize: "12px", 
+                              color: C.muted 
+                              }}>{p.structure}</span>
                           </div>
-                          <div style={{ fontSize: "10px", color: "#666", marginTop: "2px" }}>
+                          <div style={{ 
+                            fontSize: "11px", 
+                            color: C.muted 
+                            }}>
                             Modulação: {p.modulation} • {new Date(p.created_at).toLocaleDateString("pt-PT", {
                               day: "2-digit", month: "2-digit",
                               hour: "2-digit", minute: "2-digit"
@@ -886,7 +910,7 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
                         </div>
 
                         {/* seta */}
-                        <span style={{ color: "#666", fontSize: "14px" }}>›</span>
+                        <span style={{ color: C.muted, fontSize: "14px" }}>›</span>
                       </div>
                     ))}
                   </div>
@@ -995,8 +1019,14 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
                       }}>
                         {p.key}
                       </span>
-                      <span style={{ fontSize: "11px", color: C.muted }}>♩♩</span>
-                      <span style={{ fontSize: "12px", color: C.muted }}>
+                      <span style={{ 
+                        fontSize: "11px", 
+                        color: C.muted 
+                        }}>♩♩</span>
+                      <span style={{ 
+                        fontSize: "12px", 
+                        color: C.muted 
+                        }}>
                         {p.structure}
                       </span>
                     </div>
