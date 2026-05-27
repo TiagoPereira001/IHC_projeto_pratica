@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useUser, UserButton } from "@clerk/clerk-react";
 import bgJazz from "./assets/bg-jazz.png";
 
@@ -156,6 +156,7 @@ function ChordWheel({ selectedKey, onSelectKey }) {
 }
 
 function WebserviceTestForm() {
+  const [tempo, setTempo] = useState(100); // Estado para controlar os BPMs do slider
   const { user } = useUser();
   const email = user?.primaryEmailAddress?.emailAddress;
 
@@ -175,7 +176,13 @@ function WebserviceTestForm() {
   const [tab, setTab] = useState("home");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [saved, setSaved] = useState(false); // 
+  const [saved, setSaved] = useState(false);
+  // tudo os "const" que estao abaixo servem para a barra de play no ecra de progressoes
+  const audioRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [activeChordIndex, setActiveChordIndex] = useState(-1);
 
   // -----------------------------
   // Load data
@@ -243,6 +250,9 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
 
       setProgression(data);
       setAudioUrl(null);
+      setIsPlaying(false);
+      setCurrentTime(0);
+      setActiveChordIndex(-1);
       setSaved(true);
       
       await loadSavedProgressions(); 
@@ -292,8 +302,83 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
   const openInPlayer = (p) => {
     setProgression(p);       // Carrega a progressão escolhida para o ecrã
     setAudioUrl(null);       // Limpa o áudio da música anterior (se houver)
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setActiveChordIndex(-1);
     setTab("progressions");  // Muda a tab automaticamente
   };
+
+  //aqui vai toda a logica do player avançado na pagina de progressoes
+  const formatTime = (time) => {
+    if (isNaN(time) || time < 0) return "0:00";
+    const m = Math.floor(time / 60);
+    const s = Math.floor(time % 60);
+    return `${m}:${s < 10 ? "0" : ""}${s}`;
+  };
+
+  // Botão Play/Pause principal
+  const togglePlay = async () => {
+    if (!progression?.chords) return;
+
+    // Se já tem áudio, apenas faz Play ou Pause
+    if (audioRef.current && audioUrl) {
+      if (isPlaying) audioRef.current.pause();
+      else audioRef.current.play();
+      return;
+    }
+
+    // Se é a primeira vez que clica no play, vai buscar a música
+    try {
+      const encoded = encodeURIComponent(progression.chords);
+      const res = await fetch(`${BASE_URL}/api/chords2mp3/${encoded}`);
+      const data = await res.json();
+      setAudioUrl(`${BASE_URL}${data.mp3_url}`);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Dispara automaticamente quando a música é carregada
+  useEffect(() => {
+    if (audioUrl && audioRef.current && tab === "progressions") {
+      audioRef.current.play().catch(e => console.log(e));
+    }
+  }, [audioUrl, tab]);
+
+  // Atualiza a barra de tempo e a nota branca (activeChordIndex)
+  const handleTimeUpdate = () => {
+    if (!audioRef.current) return;
+    const current = audioRef.current.currentTime;
+    const dur = audioRef.current.duration;
+    setCurrentTime(current);
+
+    if (dur > 0 && progression?.chords) {
+      const chordsArray = progression.chords.split("|");
+      const progressPercentage = current / dur;
+      // Calcula qual acorde está a tocar agora
+      let index = Math.floor(progressPercentage * chordsArray.length);
+      if (index >= chordsArray.length) index = chordsArray.length - 1;
+      setActiveChordIndex(index);
+    }
+  };
+
+  // Eventos do áudio
+  const handleLoadedMetadata = () => {
+    if (audioRef.current) setDuration(audioRef.current.duration);
+  };
+  
+  const handleEnded = () => {
+    setIsPlaying(false);
+    setActiveChordIndex(-1);
+    setCurrentTime(0);
+  };
+
+  const handleSeek = (e) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = e.target.value;
+      setCurrentTime(e.target.value);
+    }
+  }
   
 
   // -----------------------------
@@ -399,14 +484,25 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
               afterSignOutUrl="/"
               appearance={{
                 elements: {
-                  userButtonAvatarBox: {
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "20px",
+                  rootBox: {
+                      width: "40px",
+                      height: "40px",
+                  },
+                  userButtonBox: {
+                    width: "100%",
+                    height: "100%",
                   },
                   userButtonTrigger: {
                     width: "40px",
                     height: "40px",
+                    padding:"0",
+                    margin:0,
+                    boxShadow: "none",
+                    borderRadius:"50%",
+                  },
+                  userButtonAvatarBox: {
+                    width: "100%",
+                    height: "100%",
                   }
                 }
               }} 
@@ -711,10 +807,11 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
           <div>
             <p style={{
               fontSize: "20px",
-              fontFamily: "Inter",
+              fontFamily: "Inter, sans-serif",
               color: "#fff",
-              margin: "0 0 12px 0"
-            }}>Ultima progressao criada</p>
+              margin: "0 0 12px 0",
+              fontWeight:"300",
+            }}>Ultima progressão criada</p>
 
             {/* gera o resultado */}
             {progression ? (
@@ -722,21 +819,33 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
                 {/* layout tipo figma */}
                 <div style={{
                   display: "flex",
-                  flexWrap: "wrap",
-                  gap: "10px",
-                  marginBottom: "20px",
-                  justifyContent: "center",
+                  gap: "12px",
+                  marginBottom: "24px",
+                  overflowX: "auto",
+                  WebkitOverflowScrolling: "touch",
+                  paddingBottom: "4px",
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none",
                 }}>
+                  {/*tenho que por um css aqui para esconder a barra de horizontal de scrooll*/}
+                  <style>{`div::-webkit-scrollbar { display: none; }`}</style>
+
                   {progression.chords.split("|").map((chord, i) => (
                     <div key={i} style={{
-                      background: "#d6e8b0",
+                      background: i === activeChordIndex ? "#FFFFFF" : C.muted,
+                      minWidth: "80px",
+                      height: "75px",
                       padding:"15px 20px",
                       borderRadius: "12px",
+                      display: "flex",
                       fontSize: "14px",
+                      alignItems: "center",
+                      justifyContent: "center",
                       fontWeight: "bold",
-                      color: "#2e3d1f",
-                      boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
-
+                      color: C.btn,
+                      boxShadow: i === activeChordIndex ? "0 4px 12px rgba(255,255,255,0.3)" : "0 4px 6px rgba(0,0,0,0.1)",
+                      flexShrink: 0,
+                      transition: "all 0.2s ease",
                     }}>
                       {chord.trim()}
                     </div>
@@ -747,40 +856,34 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
                 <div style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "8px",
-                  marginBottom: "12px",
+                  gap: "10px",
+                  marginBottom: "20px",
                 }}>
                   {/*botao play da musica*/}
-                  <button onClick={() => playChords(progression.chords)} style={{
-                    width: "48px",
-                    height: "48px",
-                    padding: 0,
-                    background: C.accent,
-                    border: "2px solid #c8d8b0",
-                    borderRadius: "50%",
-                    color: "#fff",
-                    cursor: "pointer",
+                  <button onClick={togglePlay} style={{
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
+                    gap:"6px",
+                    background: isPlaying ? "#FFFFFF4C": "#FFFFFF26",
+                    border: `1px solid ${C.muted}`,
+                    borderRadius: "8px",
+                    padding: "10px 16px",
+                    color: "#fff",
+                    cursor: "pointer",
+                    height: "46px",
                     flexShrink: 0,
-                    transition: "transform 0.1s", 
+                    transition: "all 0.2s",
+                    minWidth: "90px"
                   }}>
-                    {/* Ícone SVG Play */}
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      width="20" 
-                      height="20" 
-                      viewBox="0 0 24 24" 
-                      fill="currentColor" 
-                      stroke="currentColor" 
-                      strokeWidth="1" 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round"
-                      style={{ marginLeft: "2px" }}
-                    >
-                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                    </svg>
+                    <span style={{
+                      fontSize: "14px",
+                    }}> {isPlaying ? "⏸" : "▶"}</span>
+                    <span style={{
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                    }}> {formatTime(currentTime)}
+                    </span>
                   </button>
                   {/*caixa do tempo com a borda*/}
                   <div style={{
@@ -792,28 +895,45 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
                     border: "1px solid rgba(255,255,255,0.3)",
                     borderRadius: "8px",
                     padding: "8px 10px",
+                    height: "40px",
+                    boxSizing: "border-box",
                   }}>
-                    {/* label tempo */}
-                    <span style={{
-                      fontSize: "11px",
-                      color: C.muted,
-                      flexShrink: 0,
-                    }}>Tempo:</span>
-
+                    <input
+                      type="range"
+                      min= "0"
+                      max={duration || 100}
+                      value={currentTime || 0}
+                      onChange={handleSeek}
+                      style={{
+                        flex: 1,
+                        accentColor: C.muted,
+                        cursor: "pointer",
+                      }}
+                      />
+                      <span style={{
+                        fontSize: "12px",
+                        color: "#fff",
+                        minWidth: "30px",
+                        textAlign: "right",
+                      }}>-{formatTime(duration - currentTime)}
+                      </span>
                   </div>
                 </div>
 
-                {/* Audio */}
-                {audioUrl && (
-                  <audio controls src={audioUrl}
-                    style={{
-                      width: "100%",
-                      height: "36px",
-                      marginBottom: "12px",
-                      marginTop: "0px",
-                    }} />
-                )}
-
+                {/* este vai ser o tag do audio nativo que esta escondido */}
+                <audio
+                  ref={audioRef}
+                  src={audioUrl}
+                  onTimeUpdate={handleTimeUpdate}
+                  onLoadedMetadata={handleLoadedMetadata}
+                  onEnded={handleEnded}
+                  onPlay={() => setIsPlaying(true)}
+                  onPause={() => setIsPlaying(false)}
+                  style={{
+                    display: "none"
+                  }}
+                />
+                
                 {/* botao salvar progressao */}
                 <button onClick={saveProgression} style={{
                   ...btnStyle,
