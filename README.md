@@ -31,27 +31,32 @@ Universidade da Beira Interior — Faculdade de Engenharia, Departamento de Info
 A estrutura foi modularizada para separar componentes visuais da lógica de estado, garantindo um código mais limpo e escalável:
 
 ```text
-src/
-├── App.js                    # Rotas principais da app
-├── AppScreens.js             # Navegação interna (dentro do SmartphoneFrame)
-├── SignInPage.js             # Ecrã de autenticação (Clerk)
-├── index.js                  # Ponto de entrada — ClerkProvider
-├── WebserviceTest.js         # Lógica central e gestão de estados (Tabs)
-├── cores.js                  # Sistema de cores (Design System) e estilos globais
+genjazzui/
 │
-├── screens/                  # Ecrãs (Tabs) da aplicação
-│   ├── HomeScreen.js         # Tab Início: Roda de acordes e configuração de progressões
-│   ├── ProgressionsScreen.js # Tab Progressões: Player dinâmico e scroll automático
-│   └── LibraryScreen.js      # Tab Biblioteca: Listagem de progressões guardadas
+├── src/
+│   │
+│   ├── assets/                     # Imagens e recursos estáticos
+│   │   ├── bg-jazz.png             # Fundo estilo Glassmorphism
+│   │   └── Status_bar.png          # Barra de status do iOS
+│   │
+│   ├── components/                 # Componentes de interface reutilizáveis
+│   │   ├── SmartphoneFrame.js      # Simula a moldura física do telemóvel
+│   │   └── LibraryFilters.js       # Modal (Bottom Sheet) de filtragem da biblioteca
+│   │
+│   ├── screens/                    # Ecrãs principais da aplicação (Tabs)
+│   │   ├── HomeScreen.js           # Tab Início: roda de tonalidades e geração
+│   │   ├── ProgressionsScreen.js   # Tab Progressões: player e progressão atual
+│   │   └── LibraryScreen.js        # Tab Biblioteca: listagem de progressões guardadas
+│   │
+│   ├── cores.js                    # Sistema de cores (Design System) e estilos globais
+│   ├── App.js                      # Ficheiro principal e definição de rotas
+│   ├── AppScreens.js               # Navegação interna (tabs dentro do SmartphoneFrame)
+│   ├── SignInPage.js               # Ecrã de autenticação via Clerk
+│   ├── WebserviceTest.js           # Lógica central da API e gestão de estados
+│   └── index.js                    # Ponto de entrada — inicializa o ClerkProvider
 │
-├── components/               # Componentes visuais isolados
-│   ├── ChordWheel.js         # Componente interativo SVG (Roda das tonalidades)
-│   ├── SmartphoneFrame.js    # Componente que simula a moldura do telemóvel
-│   └── ui/                   # Outros elementos genéricos
-│
-└── assets/                   # Recursos estáticos
-    ├── bg-jazz.png           # Fundo estilo Glassmorphism
-    └── Status_bar.png        # Barra de status do iOS
+├── package.json                    # Dependências e scripts do projeto
+└── README.md                       # Documentação do projeto
 ```
 
 ---
