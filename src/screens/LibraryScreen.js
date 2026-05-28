@@ -134,15 +134,17 @@ export default function LibraryScreen({ savedProgressions, openInPlayer, deleteP
               boxSizing: "border-box",
             }}>
               <div onClick={() => openInPlayer(p)} style={{
-                width: "58px", 
-                height: "44px", 
-                padding: 0, 
-                background: "#A3AE8D", 
-                borderRadius: "8px", 
-                cursor: "pointer", 
+                width: "44px",              
+                height: "44px",
+                padding: 0,
+                background: "#2e3d1f",
+                border: "2px solid #c8d8b0",
+                borderRadius: "50%",
+                color: "#fff",
+                cursor: "pointer",
                 display: "flex",
-                alignItems: "center", 
-                justifyContent: "center", 
+                alignItems: "center",
+                justifyContent: "center",
                 flexShrink: 0,
               }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#fff" stroke="#fff" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: "2px" }}>

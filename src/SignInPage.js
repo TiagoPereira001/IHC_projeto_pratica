@@ -1,3 +1,11 @@
+// [BUG REPORT / UI ENHANCEMENT]: Simplificação excessiva do ecrã de "Landing Page".
+// Atualmente, o ecrã de boas-vindas apresenta-se demasiado estático e minimalista, 
+// carecendo de elementos visuais que transmitam a identidade da marca "Generative Jazz".
+
+// [BUG REPORT PARA A IA]: Desalinhamento de elementos secundários no ecrã de Login.
+// O texto de "Don't have an account" e a marca de rodapé "Secured by Clerk" 
+// não estão alinhados ao centro do container principal do cartão de login.
+
 import { SignIn } from "@clerk/clerk-react";
 import SmartphoneFrame from "./components/SmartphoneFrame";
 function SignInPage() {
