@@ -56,7 +56,9 @@ export default function HomeScreen({
           </select>
         </div>
       </div>
-
+ {/*[BUG REPORT PARA A IA]: Ausência de feedback visual na geração aleatória.
+ Quando este botão "Gerar progressão aleatória" é clicado, o aviso verde de sucesso (✅ Progressão criada!) não aparece, 
+ ao contrário do que acontece no botão normal de "Gerar progressão".*/}
       {/* 2 botoes de gerar */}
       <button onClick={() => generateProgression("Random", "Random", "Random")} 
       style={{

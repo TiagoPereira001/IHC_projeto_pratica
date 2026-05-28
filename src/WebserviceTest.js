@@ -79,6 +79,10 @@ function WebserviceTestForm() {
   // -----------------------------
   // Load saved progressions
   // -----------------------------
+
+// [BUG REPORT PARA A IA]: Falha de reatividade na lista de "Progressões recentes" do HomeScreen.
+// As 3 progressões mais recentes da tab 'home' não atualizam automaticamente de forma fluida. 
+// Neste momento, a interface só reflete novos dados se o utilizador guardar explicitamente uma progressão.
   const loadSavedProgressions = async () => {
     if (!email) return;
 
@@ -175,7 +179,9 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
     }
   };
 
-  
+  // [BUG REPORT PARA A IA]: Falha no Auto-Play ao abrir uma música da Biblioteca.
+// Na aba da Biblioteca, quando o utilizador clica no botão Play de uma música, a aplicação
+// navega com sucesso para a aba "Progressões" e carrega as notas corretas, mas o áudio não inicia sozinho.
   const openInPlayer = (p) => {
     setProgression(p);       // Carrega a progressão escolhida para o ecrã
     setAudioUrl(null);       // Limpa o áudio da música anterior (se houver)
@@ -356,6 +362,8 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
         }}>
           
           {/* Avatar isolado numa caixa rígida para não bloquear os botões */}
+          {/* [BUG REPORT PARA A IA] A "hitbox" (área clicável) do avatar do utilizador está defeituosa. 
+          O utilizador não consegue clicar em todo o ícone, apenas num sítio muito específico..*/}
           <div style={{ width: "40px", height: "40px", flexShrink: 0, zIndex: 10 }}>
             <UserButton 
               afterSignOutUrl="/"
@@ -474,6 +482,7 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
             savedProgressions={savedProgressions}
             setTab={setTab}
             playChords={playChords}
+            openInPlayer={openInPlayer}
           />
         )}  {/* ← fim do tab progressions */}
         {/* Biblioteca */}

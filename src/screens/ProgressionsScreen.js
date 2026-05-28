@@ -7,7 +7,7 @@ export default function ProgressionsScreen({
   isPlaying, formatTime, currentTime, duration, handleSeek,
   audioRef, audioUrl, handleTimeUpdate, handleLoadedMetadata,
   handleEnded, setIsPlaying, saveProgression, savedProgressions,
-  setTab, playChords
+  setTab, playChords, openInPlayer // ← Adicionado openInPlayer aqui
 }) {
   return (
     <div>
@@ -156,7 +156,7 @@ export default function ProgressionsScreen({
             Salvar progressão
           </button>
 
-            {/* progressoes salvas */}
+          {/* progressoes salvas  */}
           {savedProgressions.length > 0 && (
             <div style={{ 
               marginTop: "16px" 
@@ -165,20 +165,22 @@ export default function ProgressionsScreen({
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginBottom: "8px",
+                marginBottom: "8px"
               }}>
                 <span style={{ 
-                  fontSize: "19px",
+                  fontSize: "19px", 
+                  color: "#fff",
+                  fontFamily: "Inter", 
                   fontWeight:"400",
-                  color: "#fff" 
                   }}>
-                  Progressões salvas
+                  Progressões recentes
                 </span>
                 <button onClick={() => setTab("library")} style={{
-                  background: "none", 
+                  background: "none",
                   border: "none",
-                  color: "#fff", 
-                  fontSize: "19px", 
+                  color: "#fff",
+                  fontFamily: "Inter",
+                  fontSize: "19px ",
                   cursor: "pointer",
                   fontWeight:"400",
                 }}>
@@ -187,67 +189,102 @@ export default function ProgressionsScreen({
               </div>
 
               {/* mostra as 3 mais recentes */}
-              {savedProgressions.slice(0, 3).map(p => (
+              {savedProgressions.slice(0, 20).map(p => (
                 <div key={p.id} style={{
                   display: "flex",
-                  alignItems: "center",
-                  background: C.bgCard,
+                  height: "69px",              
+                  alignItems: "center",         
+                  background: "#fff",
                   border: `1px solid ${C.border}`,
-                  borderRadius: "12px",
-                  padding: "10px",
+                  borderRadius: "10px",
+                  padding: "0 14px",            
                   marginBottom: "10px",
-                  gap: "10px",
+                  gap: "14px",                  
+                  boxSizing: "border-box",
                 }}>
-
-                  {/* Botão play à esquerda */}
-                  <button onClick={() => playChords(p.chords)} style={{
-                    width: "44px", height: "44px", flexShrink: 0,
-                    padding: 0, background: C.accent, border: "2px solid #c8d8b0",
-                    borderRadius: "50%", color: "#fff", cursor: "pointer",
-                    display: "flex", alignItems: "center", justifyContent: "center",
+                  
+                  {/* Botão Play */}
+                  <button onClick={() => openInPlayer(p)} style={{
+                    width: "44px",              
+                    height: "44px",
+                    padding: 0,
+                    background: "#2e3d1f",
+                    border: "2px solid #c8d8b0",
+                    borderRadius: "50%",
+                    color: "#fff",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
                   }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: "2px" }}>
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      width="18" 
+                      height="18" 
+                      viewBox="0 0 24 24" 
+                      fill="currentColor" 
+                      stroke="currentColor" 
+                      strokeWidth="1" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"
+                      style={{ marginLeft: "2px" }} 
+                    >
                       <polygon points="5 3 19 12 5 21 5 3"></polygon>
                     </svg>
                   </button>
 
-                  {/* Info central da pagina progressao */}
-                  <div style={{ 
-                    flex: 1, 
-                    minWidth: 0 
+                  {/* Bloco de Informação (Texto) */}
+                  <div style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    gap: "10px",                 
+                    flex: 1,
+                    minWidth: 0,
+                  }}>
+                    
+                    {/* Linha 1: 🎵 C ♩♩ AABA */}
+                    <div style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px"               
                     }}>
-                    <div style={{ 
-                      display: "flex", 
-                      alignItems: "center", 
-                      gap: "6px", 
-                      marginBottom: "4px" 
-                      }}>
                       <span style={{ 
-                        fontSize: "13px" 
+                        fontSize: "16px", 
+                        color: "#000" 
                         }}>🎵</span>
                       <span style={{ 
-                        fontSize: "13px", 
+                        fontSize: "16px", 
                         fontWeight: "bold", 
-                        color: "#fff" 
-                        }}>{p.key}</span>
+                        color: "#000" 
+                        }}>
+                        {p.key}
+                      </span>
                       <span style={{ 
-                        fontSize: "11px", 
-                        color: C.muted 
+                        fontSize: "16px", 
+                        color: "#666" 
                         }}>♩♩</span>
                       <span style={{ 
-                        fontSize: "12px", 
-                        color: C.muted 
-                        }}>{p.structure}</span>
+                        fontSize: "16px", 
+                        color: "#000" 
+                        }}>
+                        {p.structure}
+                      </span>
                     </div>
-                    <div style={{ 
-                      fontSize: "11px", 
-                      color: "#A3AE8D", 
-                      }}>
+
+                    {/* Linha 2: Modulação e Data */}
+                    <div style={{
+                      fontSize: "12px",
+                      color: "#666",
+                      letterSpacing: "0.2px",
+                    }}>
                       Modulação: {p.modulation} • {new Date(p.created_at).toLocaleDateString("pt-PT", {
                         day: "2-digit", month: "2-digit",
                         hour: "2-digit", minute: "2-digit"
                       })}
                     </div>
+                    
                   </div>
                 </div>
               ))}
