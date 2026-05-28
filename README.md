@@ -28,18 +28,30 @@ Universidade da Beira Interior — Faculdade de Engenharia, Departamento de Info
 
 ## 📁 Estrutura do Projeto
 
-```
+A estrutura foi modularizada para separar componentes visuais da lógica de estado, garantindo um código mais limpo e escalável:
+
+```text
 src/
-├── App.js                  # Rotas principais da app
-├── AppScreens.js           # Navegação interna (dentro do SmartphoneFrame)
-├── SignInPage.js           # Ecrã de autenticação (Clerk)
-├── index.js                # Ponto de entrada — ClerkProvider
-├── screens/
-│   ├── HomeScreen.js       # Ecrã principal: gerador de progressões
-│   └── LibraryScreen.js    # Ecrã de biblioteca: progressões guardadas
-└── components/
-    └── SmartphoneFrame.js  # Componente que simula a moldura do telemóvel
-```
+├── App.js                    # Rotas principais da app
+├── AppScreens.js             # Navegação interna (dentro do SmartphoneFrame)
+├── SignInPage.js             # Ecrã de autenticação (Clerk)
+├── index.js                  # Ponto de entrada — ClerkProvider
+├── WebserviceTest.js         # Lógica central e gestão de estados (Tabs)
+├── cores.js                  # Sistema de cores (Design System) e estilos globais
+│
+├── screens/                  # Ecrãs (Tabs) da aplicação
+│   ├── HomeScreen.js         # Tab Início: Roda de acordes e configuração de progressões
+│   ├── ProgressionsScreen.js # Tab Progressões: Player dinâmico e scroll automático
+│   └── LibraryScreen.js      # Tab Biblioteca: Listagem de progressões guardadas
+│
+├── components/               # Componentes visuais isolados
+│   ├── ChordWheel.js         # Componente interativo SVG (Roda das tonalidades)
+│   ├── SmartphoneFrame.js    # Componente que simula a moldura do telemóvel
+│   └── ui/                   # Outros elementos genéricos
+│
+└── assets/                   # Recursos estáticos
+    ├── bg-jazz.png           # Fundo estilo Glassmorphism
+    └── Status_bar.png        # Barra de status do iOS
 
 ---
 
@@ -47,7 +59,7 @@ src/
 
 ### Pré-requisitos
 
-- [Node.js](https://nodejs.org/) (v18 ou superior)
+- [Node.js](v18 ou superior)
 - npm (incluído com o Node.js)
 
 ### Instalação (Arch Linux)
