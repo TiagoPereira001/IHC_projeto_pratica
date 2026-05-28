@@ -40,7 +40,7 @@ export default function LibraryScreen({ savedProgressions, openInPlayer, deleteP
           marginBottom: "14px" 
           }}>
           <span style={{ 
-            fontSize: "19px", 
+            fontSize: "25px", 
             fontWeight: "400", 
             fontFamily: "Inter, sans-serif", 
             color: "#fff" 
@@ -54,7 +54,7 @@ export default function LibraryScreen({ savedProgressions, openInPlayer, deleteP
             gap: "8px" 
             }}>
             <span style={{ 
-              fontSize: "12px", 
+              fontSize: "19px", 
               fontFamily: "Inter, sans-serif", 
               color: C.muted 
               }}>
@@ -76,7 +76,7 @@ export default function LibraryScreen({ savedProgressions, openInPlayer, deleteP
                   gap: "4px", 
                   cursor: "pointer", 
                   fontFamily: "Inter, sans-serif", 
-                  fontSize: "12px", 
+                  fontSize: "19px", 
                   padding: 0
                 }}>
                   Filtros
