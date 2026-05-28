@@ -52,6 +52,7 @@ src/
 └── assets/                   # Recursos estáticos
     ├── bg-jazz.png           # Fundo estilo Glassmorphism
     └── Status_bar.png        # Barra de status do iOS
+```
 
 ---
 
@@ -59,29 +60,86 @@ src/
 
 ### Pré-requisitos
 
-- [Node.js](v18 ou superior)
+- [Node.js](https://nodejs.org/) (v18 ou superior)
 - npm (incluído com o Node.js)
 
-### Instalação (Arch Linux)
+---
 
+### 🐧 Linux (Arch)
+
+**1. Instalar o Node.js**
 ```bash
 sudo pacman -S nodejs npm
 ```
 
-### Passos
-
+**2. Clonar e instalar**
 ```bash
-# 1. Clonar / extrair o projeto
-unzip IHC_Proj_P2_53394_55019_55047.zip
-cd genjazzui
-
-# 2. Instalar dependências
+git clone https://github.com/TiagoPereira001/IHC_projeto_pratica.git
+cd IHC_projeto_pratica
 npm install
-
-# 3. Instalar dependências adicionais (se necessário)
 npm install @clerk/clerk-react react-router-dom
+```
 
-# 4. Iniciar a app
+**3. Correr**
+```bash
+npm start
+```
+
+---
+
+### 🍎 macOS
+
+**1. Instalar o Node.js**
+
+Usando Homebrew (recomendado):
+```bash
+brew install node
+```
+Ou descarrega o instalador `.pkg` em [nodejs.org](https://nodejs.org/).
+
+Verifica a instalação:
+```bash
+node -v
+npm -v
+```
+
+**2. Clonar e instalar**
+```bash
+git clone https://github.com/TiagoPereira001/IHC_projeto_pratica.git
+cd IHC_projeto_pratica
+npm install
+npm install @clerk/clerk-react react-router-dom
+```
+
+**3. Correr**
+```bash
+npm start
+```
+
+---
+
+### 🪟 Windows
+
+**1. Instalar o Node.js**
+
+Descarrega e instala o instalador `.msi` em [nodejs.org](https://nodejs.org/).
+
+Verifica a instalação no **Command Prompt** ou **PowerShell**:
+```cmd
+node -v
+npm -v
+```
+
+**2. Clonar e instalar**
+```cmd
+git clone https://github.com/TiagoPereira001/IHC_projeto_pratica.git
+cd IHC_projeto_pratica
+npm install
+npm install @clerk/clerk-react react-router-dom
+```
+
+**3. Correr**
+```cmd
 npm start
 ```
 
@@ -133,11 +191,13 @@ Base URL: `https://genjazz-api.fly.dev`
 
 1. Ferramentas de IA utilizadas:
 Claude (modelo de linguagem da Anthropic).
+
 2. De que forma essas ferramentas foram utilizadas:
-A IA foi utilizada exclusivamente como assistente de apoio ao desenvolvimento.Respondendo a dúvidas, sugerindo correções e explicando conceitos. Todo o raciocínio, decisões de design, estrutura do projeto e implementação foram conduzidos pela equipa.
+A IA foi utilizada exclusivamente como assistente de apoio ao desenvolvimento. Respondendo a dúvidas, sugerindo correções e explicando conceitos. Todo o raciocínio, decisões de design, estrutura do projeto e implementação foram conduzidos pela equipa.
+
 3. Em que partes específicas do projeto essas ferramentas tiveram intervenção:
 Estrutura e navegação: A equipa pediu apoio na organização dos ecrãs e na integração com o Clerk.
-Componente visual — Roda das Tonalidades:foi consultada para apoiar os cálculos matemáticos dos segmentos SVG do componente da roda das tonalidades.
+Componente visual — Roda das Tonalidades: foi consultada para apoiar os cálculos matemáticos dos segmentos SVG do componente da roda das tonalidades.
 Depuração: A IA foi consultada para identificar erros de sintaxe JSX e problemas de estrutura de componentes.
 
 ---
