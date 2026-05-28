@@ -1,159 +1,16 @@
+// src/WebserviceTest.js
 import { useEffect, useState, useRef } from "react";
 import { useUser, UserButton } from "@clerk/clerk-react";
 import bgJazz from "./assets/bg-jazz.png";
 
+// Importar as  cores e estilos
+import { C, selectStyle, btnStyle } from "./cores"; 
+
+// Importar o componente da Roda
+import ChordWheel from "./components/ChordWheel";
+
 const BASE_URL = "https://genjazz-api.fly.dev";
 
-// fazer a paleta de cores que esta no figma
-const C = {
-  bg: "#4a5e38",
-  bgDark: "#3a4d2a",
-  bgCard: "#3f5230",
-  btn: "#2e3d1f",
-  muted: "#c8d8b0",
-  border: "#5a7040",
-  accent: "#7aab6a",
-};
-
-const selectStyle = {
-  width: "100%",
-  height: "46px",
-  padding: "11px 13px 11px 10px",
-  borderRadius: "8px",
-  border: "1px solid #5a7040",
-  background: "#FDFDFD",
-  color: "#1A1C1E",
-  fontSize: "13px",
-  fontfamily: "Helvetica",
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-};
-
-const btnStyle = {
-  padding: "10px", 
-  background: "#2e3d1f",
-  color: "#fff", 
-  border: "none", 
-  borderRadius: "8px",
-  cursor: "pointer", 
-  fontFamily: "'Georgia', serif",
-};
-
-const cardStyle = {
-  background: "#3f5230", 
-  border: "1px solid #5a7040",
-  borderRadius: "10px", 
-  padding: "14px", 
-  marginTop: "16px",
-};
-
-// roda das tonalidades - chaves e cores
-const WHEEL_KEYS = [
-  { key: "C",  minor: "Am",  color: "#E74C3C" },
-  { key: "G",  minor: "Em",  color: "#E67E22" },
-  { key: "D",  minor: "Bm",  color: "#F39C12" },
-  { key: "A",  minor: "F#m", color: "#F1C40F" },
-  { key: "E",  minor: "C#m", color: "#2ECC71" },
-  { key: "B",  minor: "G#m", color: "#1ABC9C" },
-  { key: "Gb", minor: "Ebm", color: "#3498DB" },
-  { key: "Db", minor: "Bbm", color: "#2980B9" },
-  { key: "Ab", minor: "Fm",  color: "#9B59B6" },
-  { key: "Eb", minor: "Cm",  color: "#8E44AD" },
-  { key: "Bb", minor: "Gm",  color: "#E91E63" },
-  { key: "F",  minor: "Dm",  color: "#FF5722" },
-];
-
-// funcao para calcular o path de um segmento da roda
-function segmentPath(cx, cy, r1, r2, startAngle, endAngle) {
-  const toRad = (deg) => (deg * Math.PI) / 180;
-  const x1 = cx + r2 * Math.cos(toRad(startAngle));
-  const y1 = cy + r2 * Math.sin(toRad(startAngle));
-  const x2 = cx + r2 * Math.cos(toRad(endAngle));
-  const y2 = cy + r2 * Math.sin(toRad(endAngle));
-  const x3 = cx + r1 * Math.cos(toRad(endAngle));
-  const y3 = cy + r1 * Math.sin(toRad(endAngle));
-  const x4 = cx + r1 * Math.cos(toRad(startAngle));
-  const y4 = cy + r1 * Math.sin(toRad(startAngle));
-  return `M ${x1} ${y1} A ${r2} ${r2} 0 0 1 ${x2} ${y2} L ${x3} ${y3} A ${r1} ${r1} 0 0 0 ${x4} ${y4} Z`;
-}
-
-// funcao para calcular o centro de um segmento 
-function segmentCenter(cx, cy, r, angle) {
-  const toRad = (deg) => (deg * Math.PI) / 180;
-  return {
-    x: cx + r * Math.cos(toRad(angle)),
-    y: cy + r * Math.sin(toRad(angle)),
-  };
-}
-
-// componente da roda das tonalidades
-function ChordWheel({ selectedKey, onSelectKey }) {
-  const cx = 145, cy = 145;
-  const outerR = 130, midR = 88, innerR = 52;
-  const startOffset = -90; // começa no topo
-
-  return (
-    <svg width="115%" height="auto" viewBox="0 0 290 290"
-      style={{ 
-        display: "block", 
-        margin: "0 auto" 
-        }}>
-
-      {WHEEL_KEYS.map((item, i) => {
-        const startAngle = startOffset + i * 30;
-        const endAngle   = startOffset + (i + 1) * 30;
-        const midAngle   = startOffset + i * 30 + 15;
-        const isSelected = selectedKey === item.key;
-
-        const outerCenter = segmentCenter(cx, cy, (outerR + midR) / 2, midAngle);
-        const innerCenter = segmentCenter(cx, cy, (midR + innerR) / 2, midAngle);
-
-        return (
-          <g key={item.key} onClick={() => onSelectKey(item.key)}
-            style={{ cursor: "pointer" }}>
-
-            {/* segmento exterior - tonalidade major */}
-            <path
-              d={segmentPath(cx, cy, midR, outerR, startAngle, endAngle)}
-              fill={item.color}
-              opacity={isSelected ? 1 : 0.72}
-              stroke="#3a4d2a" strokeWidth="1.5"
-            />
-            <text x={outerCenter.x} y={outerCenter.y}
-              textAnchor="middle" dominantBaseline="middle"
-              fontSize="20" fontWeight="bold" fill="#fff"
-              style={{ pointerEvents: "none" }}>
-              {item.key}
-            </text>
-
-            {/* segmento interior - tonalidade minor */}
-            <path
-              d={segmentPath(cx, cy, innerR, midR, startAngle, endAngle)}
-              fill={item.color}
-              opacity={isSelected ? 0.6 : 0.35}
-              stroke="#3a4d2a" strokeWidth="1"
-            />
-            <text x={innerCenter.x} y={innerCenter.y}
-              textAnchor="middle" dominantBaseline="middle"
-              fontSize="15" fill="#fff"
-              style={{ pointerEvents: "none" }}>
-              {item.minor}
-            </text>
-          </g>
-        );
-      })}
-
-      {/* circulo central */}
-      <circle cx={cx} cy={cy} r={innerR}
-        fill="#3a4d2a" stroke="#5a7040" strokeWidth="1.5" />
-      <text x={cx} y={cy} textAnchor="middle" dominantBaseline="middle"
-        fontSize="15" fontWeight="bold" fill="#c8d8b0">
-        {selectedKey || "?"}
-      </text>
-    </svg>
-  );
-}
 
 function WebserviceTestForm() {
   const [tempo, setTempo] = useState(100); // Estado para controlar os BPMs do slider
@@ -179,6 +36,7 @@ function WebserviceTestForm() {
   const [saved, setSaved] = useState(false);
   // tudo os "const" que estao abaixo servem para a barra de play no ecra de progressoes
   const audioRef = useRef(null);
+  const scrollRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -235,7 +93,24 @@ function WebserviceTestForm() {
   useEffect(() => {
     if (email) loadSavedProgressions();
   }, [email]);
+// Efeito para centrar a nota ativa automaticamente no deslize horizontal
 
+  useEffect(() => {
+    if (scrollRef.current && activeChordIndex >= 0) {
+      const container = scrollRef.current;
+      const activeElement = container.children[activeChordIndex]; // Encontra a nota branca atual
+
+      if (activeElement) {
+        // Calcula a posição para deixar a nota exatamente no centro
+        const scrollPos = activeElement.offsetLeft - (container.clientWidth / 2) + (activeElement.clientWidth / 2);
+        
+        container.scrollTo({
+          left: scrollPos,
+          behavior: "smooth" // Faz o deslize suave (swipe left automático)
+        });
+      }
+    }
+  }, [activeChordIndex]);
   // -----------------------------
   // Generate progression
   // -----------------------------
@@ -539,7 +414,7 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
                   fontWeight: tab === id ? "bold" : "normal",
                   fontSize: "15px",
                   cursor: "pointer",
-                  fontFamily: "SF Pro, sans-serif", /* Corrigido de fontfamily para fontFamily */
+                  fontFamily: "SF Pro, sans-serif", 
                   transition: "all 0.2s",
                 }}>
                 {label}
@@ -635,7 +510,7 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
               fontSize: "14px",
               background: "#fff",
               border: "none",
-              background: "#2e3d1f",
+              background: "#2E4A2C",
               fontFamily: "Helvetica Now Display",
               color: "#fff",
               borderRadius: "12px",
@@ -646,7 +521,7 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
               lineHeight:"140%",
               letterspacing: "-0.14px",
             }}>
-              Gerar progressao
+              Gerar progressão
             </button>
 
             {/*aviso de progressao que foi criada*/}
@@ -817,7 +692,9 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
             {progression ? (
               <div>
                 {/* layout tipo figma */}
-                <div style={{
+                <div
+                ref={scrollRef}
+                style={{
                   display: "flex",
                   gap: "12px",
                   marginBottom: "24px",
@@ -832,8 +709,9 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
 
                   {progression.chords.split("|").map((chord, i) => (
                     <div key={i} style={{
-                      background: i === activeChordIndex ? "#FFFFFF" : C.muted,
+                      background: i === activeChordIndex ? "#FFFFFF" : "#A3AE8DCC",
                       minWidth: "80px",
+                      backdropFilter: "blur(10px)",
                       height: "75px",
                       padding:"15px 20px",
                       borderRadius: "12px",
@@ -842,8 +720,8 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
                       alignItems: "center",
                       justifyContent: "center",
                       fontWeight: "bold",
-                      color: C.btn,
-                      boxShadow: i === activeChordIndex ? "0 4px 12px rgba(255,255,255,0.3)" : "0 4px 6px rgba(0,0,0,0.1)",
+                      color: i === activeChordIndex ? C.btn : "#FFFFFF",
+                      boxShadow: i === activeChordIndex ? "0 4px 12px #ffffff4d" : "0 4px 6px #0000001a",
                       flexShrink: 0,
                       transition: "all 0.2s ease",
                     }}>
@@ -891,8 +769,8 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
-                    background: "rgba(255,255,255,0.1)",
-                    border: "1px solid rgba(255,255,255,0.3)",
+                    background: "#ffffff1a",
+                    border: "1px solid #ffffff4d",
                     borderRadius: "8px",
                     padding: "8px 10px",
                     height: "40px",
@@ -949,15 +827,18 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
 
                   {/* progressoes salvas */}
                 {savedProgressions.length > 0 && (
-                  <div style={{ marginTop: "16px" }}>
+                  <div style={{ 
+                    marginTop: "16px" 
+                    }}>
                     <div style={{
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      marginBottom: "8px"
+                      marginBottom: "8px",
                     }}>
                       <span style={{ 
-                        fontSize: "12px", 
+                        fontSize: "19px",
+                        fontWeight:"400",
                         color: "#fff" 
                         }}>
                         Progressões salvas
@@ -966,8 +847,9 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
                         background: "none", 
                         border: "none",
                         color: "#fff", 
-                        fontSize: "11px", 
-                        cursor: "pointer"
+                        fontSize: "19px", 
+                        cursor: "pointer",
+                        fontWeight:"400",
                       }}>
                         Ver biblioteca →
                       </button>
@@ -999,8 +881,16 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
                         </button>
 
                         {/* Info central da pagina progressao */}
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "4px" }}>
+                        <div style={{ 
+                          flex: 1, 
+                          minWidth: 0 
+                          }}>
+                          <div style={{ 
+                            display: "flex", 
+                            alignItems: "center", 
+                            gap: "6px", 
+                            marginBottom: "4px" 
+                            }}>
                             <span style={{ 
                               fontSize: "13px" 
                               }}>🎵</span>
@@ -1020,7 +910,7 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
                           </div>
                           <div style={{ 
                             fontSize: "11px", 
-                            color: C.muted 
+                            color: "#A3AE8D", 
                             }}>
                             Modulação: {p.modulation} • {new Date(p.created_at).toLocaleDateString("pt-PT", {
                               day: "2-digit", month: "2-digit",
@@ -1028,9 +918,6 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
                             })}
                           </div>
                         </div>
-
-                        {/* seta */}
-                        <span style={{ color: C.muted, fontSize: "14px" }}>›</span>
                       </div>
                     ))}
                   </div>

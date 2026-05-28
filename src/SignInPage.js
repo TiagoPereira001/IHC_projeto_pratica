@@ -30,7 +30,7 @@ function SignInPage() {
         }}> Jazz</span>
         </div>
         <div style={{
-          fontSize: "11px",
+          fontSize: "14px",
           color: "#c8d8b0",
           marginTop: "4px"
         }}>

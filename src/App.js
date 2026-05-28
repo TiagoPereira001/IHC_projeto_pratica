@@ -31,11 +31,24 @@ function WelcomeScreen (){
       fontFamily: "'Georgia', serif",
     }}>
       { /* aquio é o logo*/}
-      <div style= {{ textAlign: "center", marginBottom: "16px"}}>
-        <div style = {{fontSize: "26px", color: "#fff", letterSpacing:"1px"}}>
-          Generative<span style ={{ fontWeight: "900"}} >Jazz</span>
+      <div style= {{ 
+        textAlign: "center", 
+        marginBottom: "16px"
+        }}>
+        <div style = {{
+          fontSize: "26px", 
+          color: "#fff", 
+          letterSpacing:"1px"
+          }}>
+          Generative<span style ={{ 
+            fontWeight: "900"
+            }} >Jazz</span>
         </div>
-        <div style = {{fontSize: "11px", color: "#c8d8b0", marginTop: "4px"}}>
+        <div style = {{
+          fontSize: "14px", 
+          color: "#c8d8b0", 
+          marginTop: "4px"
+          }}>
           Boas-vindas.
         </div>
       </div>
@@ -43,7 +56,7 @@ function WelcomeScreen (){
       {/*vai ser o subtitulo*/}
       <p style = {{
         color:"#c8d8b0",
-        fontSize: "13px",
+        fontSize: "20px",
         textAlign:"center"
       }}>
         Antes de continuar, tem que fazer login
@@ -61,7 +74,7 @@ function WelcomeScreen (){
         textAlign:"center",
         textDecoration:"none",
         fontWeight:"bold",
-        fontSize:"14px",
+        fontSize:"16px",
         marginTop:"8px",
       }}>
         entrar
