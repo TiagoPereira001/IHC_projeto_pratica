@@ -209,7 +209,19 @@ Depuração: A IA foi consultada para identificar erros de sintaxe JSX e problem
 
 ## 📝 Alterações ao protótipo (Parte 1)
 
-*(A preencher — indicar as alterações efetuadas ao protótipo Figma e justificá-las)*
+## 🎨 Alterações face ao Protótipo (Figma)
+
+Durante o desenvolvimento em React, foram feitas algumas adaptações em relação ao design inicial planeado no Figma, visando melhorar a usabilidade e a performance da aplicação:
+
+- **Leitor de Áudio Partilhado:** Inicialmente, o reprodutor de áudio foi idealizado de forma isolada. Na implementação, optou-se por uma função `openInPlayer` que permite clicar numa música da biblioteca e transitar automaticamente o utilizador para a aba de Progressões, reaproveitando o leitor visual avançado para todas as faixas guardadas.
+
+- **Segmented Control nos Filtros:** Para os filtros, substituiu-se o uso de caixas de seleção (checkboxes) antiquadas por um sistema de *Tabs* no topo (Segmented Control) e botões *Pill/Toggle* amplos. Isto maximiza a área tátil e oferece um aspeto muito mais natural para dispositivos *touch*.
+
+- **Ajuste de Contrastes:** Algumas tonalidades de verde utilizadas no Figma foram ligeiramente escurecidas no código (CSS) para garantir que a tipografia a branco passa nos testes básicos de rácio de contraste (Acessibilidade W3C).
+
+- **Simplificação da Barra Superior (*Topbar*):** O design original do protótipo contemplava uma *topbar* com um layout gráfico mais denso e rígido. Durante o desenvolvimento em React, optou-se por simplificar este componente arquitetural. Esta adaptação garantiu que a integração do botão flutuante de perfil (gerido pelo sistema Clerk) e a navegação entre secções tivessem um comportamento perfeitamente responsivo, priorizando o espaço para o conteúdo da aplicação.
+
+- **Barra de Filtros vs. *Bottom Sheet*:** No protótipo estático do Figma, os filtros encontravam-se numa barra ou painel permanentemente exposto no ecrã da Biblioteca. Na versão final programada, essa barra fixa foi removida e substituída por um botão minimalista ("Filtros") que invoca um *Bottom Sheet Modal*. Esta alteração drástica reduz a carga cognitiva inicial (Heurística do Design Estético e Minimalista) e maximiza a área útil do ecrã (*Screen Real Estate*) para a visualização dos cartões das músicas guardadas.
 
 ---
 
