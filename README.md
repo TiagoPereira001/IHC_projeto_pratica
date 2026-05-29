@@ -223,6 +223,8 @@ Durante o desenvolvimento em React, foram feitas algumas adaptações em relaç�
 
 - **Barra de Filtros vs. *Bottom Sheet*:** No protótipo estático do Figma, os filtros encontravam-se numa barra ou painel permanentemente exposto no ecrã da Biblioteca. Na versão final programada, essa barra fixa foi removida e substituída por um botão minimalista ("Filtros") que invoca um *Bottom Sheet Modal*. Esta alteração drástica reduz a carga cognitiva inicial (Heurística do Design Estético e Minimalista) e maximiza a área útil do ecrã (*Screen Real Estate*) para a visualização dos cartões das músicas guardadas.
 
+- **Gestão de Perfil (Integração Clerk):** O protótipo estático desenhado no Figma não contemplava a existência de um ecrã, botão ou menu dedicado à gestão da conta do utilizador. Durante a implementação, para garantir um sistema de autenticação robusto e fornecer controlo de sessão, integrou-se o componente de perfil flutuante do *Clerk*. Esta adição preenche uma lacuna funcional do design original, permitindo ao utilizador gerir os seus dados e fazer *logout*, o que vai ao encontro da Heurística de Controlo e Liberdade do Utilizador.
+
 ---
 
 ## 📦 Entrega
