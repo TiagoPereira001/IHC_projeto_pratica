@@ -13,13 +13,14 @@ function SignInPage() {
     <SmartphoneFrame>
       <div style = {{
         height: "100%",
+        width: "100%",
         background:"#4a5e38",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
         fontFamily: "'Georgia', serif",
-        padding :"16px",
+        padding :"12px",
         boxSizing: "border-box",
         overflow:"hidden",
       }}>
@@ -49,9 +50,9 @@ function SignInPage() {
       {/* aquii vai o formulario com as cores do figma que temos*/}
     <div style = {{
       width: "100%",
-      overflow: "hidden",
       display: "flex",
       justifyContent: "center",
+      alignItems: "center",
     }}>
       <SignIn
         routing="path"
@@ -69,26 +70,33 @@ function SignInPage() {
           },
           elements: {
             rootBox: {
-              width: "328px",
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              margin: "0",
             },
             card: {
-              width: "328px",
+              width: "100%",
               maxWidth: "100%",
               boxShadow: "none",
               borderRadius: "12px",
               border: "1px solid #5a7040",
               padding: "20px 16px",
+              margin: "0",
             },
 
             headerTitle : { 
-              color: "#fff"
+              color: "#fff",
+              textAlign: "center"
             },
             headerSubtitle : {
-              color: "#c8d8b0"
+              color: "#c8d8b0",
+              textAlign: "center"
             },
             formButtonPrimary: {
               background: "#2e3d1f",
-              fontFamily: "'Georgia', serif"
+              fontFamily: "'Georgia', serif",
+              width: "100%"
             },
             footerAction:{
               display:"flex",
@@ -109,6 +117,19 @@ function SignInPage() {
             formFieldLabel: {
               color:"#c8d8b0"
             },
+            // Centrar o "Secured by Clerk" e o banner de "Development Mode"
+            internal: {
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            },
+            footer: {
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }
             },
           }}
         />
