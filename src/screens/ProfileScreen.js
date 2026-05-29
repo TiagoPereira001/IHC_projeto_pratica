@@ -6,120 +6,106 @@ export default function ProfileScreen({ setTab }) {
   return (
     <div style={{
       height: "100%",
-      width: "100%",
       display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      background: "rgba(0, 0, 0, 0.4)", // Efeito de escurecimento do fundo
-      backdropFilter: "blur(4px)",
-      position: "relative",
-      padding: "10px",
-      boxSizing: "border-box",
+      flexDirection: "column",
+      background: "transparent",
+      width: "100%",
+      overflowX: "hidden",
     }}>
-      {/* Janela Flutuante Pequena */}
+      {/* Botão para voltar atrás - Restaurado */}
+      <button 
+        onClick={() => setTab("home")}
+        style={{
+          background: "rgba(255, 255, 255, 0.15)",
+          border: "1px solid rgba(255, 255, 255, 0.3)",
+          borderRadius: "12px",
+          color: "#fff",
+          padding: "10px 16px",
+          margin: "8px 16px 16px 16px",
+          cursor: "pointer",
+          fontWeight: "bold",
+          fontSize: "14px",
+          alignSelf: "flex-start",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          backdropFilter: "blur(4px)",
+          zIndex: 20,
+        }}
+      >
+        ← Voltar
+      </button>
+
+      {/* Container do Perfil - Full Page com correções de largura */}
       <div style={{
-        width: "280px", // Largura pequena para caber no frame de 320px
-        height: "450px", // Altura controlada
-        background: "#fff",
-        borderRadius: "24px",
-        boxShadow: "0 20px 40px rgba(0,0,0,0.4)",
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-        position: "relative",
-        animation: "appear 0.3s ease-out",
+        flex: 1,
+        overflowY: "auto",
+        overflowX: "hidden",
+        width: "100%",
+        background: "rgba(255, 255, 255, 0.98)",
+        borderRadius: "24px 24px 0 0", // Arredondado só no topo para parecer uma página que sobe
+        boxShadow: "0 -10px 30px rgba(0,0,0,0.2)",
       }}>
-        
-        {/* Estilo para animação e scroll */}
-        <style>{`
-          @keyframes appear {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-          .cl-userProfile-root {
-            width: 100% !important;
-          }
-        `}</style>
-
-        {/* Cabeçalho da Janela com Botão Fechar */}
-        <div style={{
-          padding: "12px 16px",
-          display: "flex",
-          justifyContent: "flex-end",
-          background: "#f9fafb",
-          borderBottom: "1px solid #eee",
-          zIndex: 10,
-        }}>
-          <button 
-            onClick={() => setTab("home")}
-            style={{
-              background: "#eee",
-              border: "none",
-              borderRadius: "50%",
-              width: "28px",
-              height: "28px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              fontSize: "16px",
-              color: "#666",
-              fontWeight: "bold"
-            }}
-          >
-            ✕
-          </button>
-        </div>
-
-        {/* Container do Clerk com Escala Reduzida */}
-        <div style={{
-          flex: 1,
-          overflowY: "auto",
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          padding: "0",
-        }}>
-          <div style={{
-            width: "100%",
-            transform: "scale(0.85)", // Diminuímos para caber melhor
-            transformOrigin: "top center",
-            height: "117%", // Compensar a escala na altura
-            marginBottom: "-17%",
-          }}>
-            <UserProfile 
-              routing="hash"
-              appearance={{
-                elements: {
-                  rootBox: {
-                    width: "100%",
-                    maxWidth: "100%",
-                  },
-                  card: {
-                    width: "100%",
-                    maxWidth: "100%",
-                    boxShadow: "none",
-                    borderRadius: "0",
-                    border: "none",
-                  },
-                  navbar: {
-                    display: "none", // Esconder barra lateral para poupar espaço
-                  },
-                  scrollBox: {
-                    borderRadius: "0",
-                    padding: "10px",
-                  },
-                  pageScrollBox: {
-                    padding: "10px",
-                  },
-                  userProfile: {
-                    maxWidth: "100%",
-                  }
-                }
-              }}
-            />
-          </div>
-        </div>
+        <UserProfile 
+          routing="hash"
+          appearance={{
+            elements: {
+              rootBox: {
+                width: "100%",
+                maxWidth: "100%",
+              },
+              card: {
+                width: "100%",
+                maxWidth: "100%",
+                boxShadow: "none",
+                borderRadius: "0",
+                padding: "0",
+              },
+              navbar: {
+                display: "none", // Mantemos escondido para ganhar largura
+              },
+              scrollBox: {
+                borderRadius: "0",
+                padding: "16px",
+                width: "100%",
+                boxSizing: "border-box",
+              },
+              pageScrollBox: {
+                padding: "16px",
+                width: "100%",
+                boxSizing: "border-box",
+              },
+              userProfile: {
+                width: "100%",
+                maxWidth: "100%",
+              },
+              headerTitle: {
+                fontSize: "1.25rem",
+              },
+              headerSubtitle: {
+                fontSize: "0.85rem",
+                whiteSpace: "normal", // Forçar quebra de linha no subtítulo
+              },
+              profileSection: {
+                flexDirection: "column", // Forçar empilhamento vertical
+                alignItems: "flex-start",
+                gap: "8px",
+              },
+              formFieldRow: {
+                flexDirection: "column",
+                alignItems: "stretch",
+              },
+              formField: {
+                width: "100%",
+              },
+              avatarRow: {
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
+              }
+            }
+          }}
+        />
       </div>
     </div>
   );
