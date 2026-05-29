@@ -257,34 +257,40 @@ export default function LibraryFilters({
 
         {/* Acções Finais */}
         <div style={{ 
-            display: "flex", 
-            gap: "12px", 
-            marginTop: "16px" }}>
+          display: "flex", 
+          gap: "24px", // Aumentámos a margem ao centro (antes era 12px)
+          marginTop: "24px" 
+        }}>
+          {/* Botão Secundário (Outline) */}
           <button onClick={handleClearAnim} style={{ 
             flex: 1, 
-            background: "#ffffff1a", 
-            border: "none", 
-            borderRadius: "12px", 
+            background: "transparent", 
+            border: "1.5px solid rgba(255, 255, 255, 0.3)", 
+            borderRadius: "14px", 
             color: "#fff", 
             padding: "16px", 
             fontFamily: "Inter, sans-serif", 
             fontSize: "15px", 
             fontWeight: "500", 
-            cursor: "pointer" 
+            cursor: "pointer",
+            transition: "background 0.2s ease"
           }}>
             Limpar tudo
           </button>
+          
+          {/* Botão Primário (Alto Contraste) */}
           <button onClick={handleApplyAnim} style={{ 
             flex: 1, 
-            background: "#2E4A2C", 
+            background: "#A3AE8D", // Verde claro para destacar do fundo escuro
             border: "none", 
-            borderRadius: "12px", 
-            color: "#fff", 
+            borderRadius: "14px", 
+            color: "#111", // Texto quase preto para contraste perfeito (Acessibilidade)
             padding: "16px", 
             fontFamily: "Inter, sans-serif", 
             fontSize: "15px", 
-            fontWeight: "500", 
-            cursor: "pointer" 
+            fontWeight: "600", 
+            cursor: "pointer",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)" // Pequena sombra para dar profundidade
           }}>
             Aplicar
           </button>

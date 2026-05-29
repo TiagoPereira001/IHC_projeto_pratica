@@ -1,4 +1,3 @@
-// src/screens/LibraryScreen.js
 import React, { useState, useMemo } from "react";
 import { C } from "../cores"; 
 import LibraryFilters from "../components/LibraryFilters";
@@ -39,13 +38,15 @@ export default function LibraryScreen({ savedProgressions, openInPlayer, deleteP
           alignItems: "center", 
           marginBottom: "14px" 
           }}>
+          
+          {/* Título com a contagem dinâmica injetada */}
           <span style={{ 
             fontSize: "25px", 
             fontWeight: "400", 
             fontFamily: "Inter, sans-serif", 
             color: "#fff" 
             }}>
-            Biblioteca
+            Biblioteca ({savedProgressions.length})
           </span>
           
           <div style={{ 
@@ -53,46 +54,33 @@ export default function LibraryScreen({ savedProgressions, openInPlayer, deleteP
             alignItems: "center", 
             gap: "8px" 
             }}>
-            <span style={{ 
-              fontSize: "19px", 
-              fontFamily: "Inter, sans-serif", 
-              color: C.muted 
-              }}>
-              {filteredProgressions.length} guardadas
-            </span>
             
             {savedProgressions.length > 0 && (
-              <>
-                <span style={{ 
-                  color: C.muted, 
-                  fontSize: "10px" 
-                  }}>•</span>
-                <button onClick={() => setIsFilterOpen(true)} style={{
-                  background: "none", 
-                  border: "none", 
-                  color: "#fff", 
-                  display: "flex", 
-                  alignItems: "center", 
-                  gap: "4px", 
-                  cursor: "pointer", 
-                  fontFamily: "Inter, sans-serif", 
-                  fontSize: "19px", 
-                  padding: 0
-                }}>
-                  Filtros
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <line x1="4" y1="21" x2="4" y2="14"></line>
-                    <line x1="4" y1="10" x2="4" y2="3"></line>
-                    <line x1="12" y1="21" x2="12" y2="12"></line>
-                    <line x1="12" y1="8" x2="12" y2="3"></line>
-                    <line x1="20" y1="21" x2="20" y2="16"></line>
-                    <line x1="20" y1="12" x2="20" y2="3"></line>
-                    <line x1="1" y1="14" x2="7" y2="14"></line>
-                    <line x1="9" y1="8" x2="15" y2="8"></line>
-                    <line x1="17" y1="16" x2="23" y2="16"></line>
-                  </svg>
-                </button>
-              </>
+              <button onClick={() => setIsFilterOpen(true)} style={{
+                background: "none", 
+                border: "none", 
+                color: "#fff", 
+                display: "flex", 
+                alignItems: "center", 
+                gap: "4px", 
+                cursor: "pointer", 
+                fontFamily: "Inter, sans-serif", 
+                fontSize: "19px", 
+                padding: 0
+              }}>
+                Filtros
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="4" y1="21" x2="4" y2="14"></line>
+                  <line x1="4" y1="10" x2="4" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12" y2="3"></line>
+                  <line x1="20" y1="21" x2="20" y2="16"></line>
+                  <line x1="20" y1="12" x2="20" y2="3"></line>
+                  <line x1="1" y1="14" x2="7" y2="14"></line>
+                  <line x1="9" y1="8" x2="15" y2="8"></line>
+                  <line x1="17" y1="16" x2="23" y2="16"></line>
+                </svg>
+              </button>
             )}
           </div>
         </div>
@@ -112,11 +100,12 @@ export default function LibraryScreen({ savedProgressions, openInPlayer, deleteP
               opacity: 0.4 
               }}>🎷</div>
             <p style={{ 
+              fontSize: "20px",
               margin: "0 0 4px 0" 
               }}>Nenhuma progressão encontrada.</p>
             <p style={{ 
               margin: 0, 
-              fontSize: "11px" 
+              fontSize: "20px" 
               }}>Tenta remover os filtros ou gerar mais!</p>
           </div>
         ) : (

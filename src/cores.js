@@ -1,4 +1,3 @@
-// src/Theme.js
 
 export const C = {
   bg: "#4a5e38",

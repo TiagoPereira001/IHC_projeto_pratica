@@ -1,5 +1,4 @@
-// src/screens/ProgressionsScreen.js
-import React from "react";
+import React, { useEffect } from "react";
 import { C, btnStyle } from "../cores";
 
 export default function ProgressionsScreen({
@@ -7,8 +6,29 @@ export default function ProgressionsScreen({
   isPlaying, formatTime, currentTime, duration, handleSeek,
   audioRef, audioUrl, handleTimeUpdate, handleLoadedMetadata,
   handleEnded, setIsPlaying, saveProgression, savedProgressions,
-  setTab, playChords, openInPlayer // ← Adicionado openInPlayer aqui
+  setTab, playChords, openInPlayer
 }) {
+
+  // ==========================================
+  // LÓGICA DE UX: AUTO-SCROLL À PROVA DE iOS
+  // ==========================================
+  useEffect(() => {
+    // Voltámos ao scrollIntoView porque é nativo e não é bloqueado pelo Safari!
+    if (activeChordIndex !== null && activeChordIndex !== undefined && activeChordIndex >= 0) {
+      const activeElement = document.getElementById(`chord-${activeChordIndex}`);
+      if (activeElement && scrollRef.current) {
+        // Calcula a posição para deixar a nota exatamente no centro
+        const container = scrollRef.current;
+        const scrollPos = activeElement.offsetLeft - (container.clientWidth / 2) + (activeElement.clientWidth / 2);
+        
+        container.scrollTo({
+          left: scrollPos,
+          behavior: "smooth"
+        });
+      }
+    }
+  }, [activeChordIndex, scrollRef]);
+
   return (
     <div>
       <p style={{
@@ -34,31 +54,44 @@ export default function ProgressionsScreen({
             paddingBottom: "4px",
             scrollbarWidth: "none",
             msOverflowStyle: "none",
+            scrollBehavior: "smooth",
           }}>
             {/*tenho que por um css aqui para esconder a barra de horizontal de scrooll*/}
             <style>{`div::-webkit-scrollbar { display: none; }`}</style>
 
+            {/* --- ESPAÇO FANTASMA INICIAL --- */}
+            {/* Ajustado para calc(50% - 40px) para centrar perfeitamente a nota de 80px */}
+            <div style={{ minWidth: "calc(50% - 40px)", flexShrink: 0 }}></div>
+
             {progression.chords.split("|").map((chord, i) => (
-              <div key={i} style={{
-                background: i === activeChordIndex ? "#FFFFFF" : "#A3AE8DCC",
-                minWidth: "80px",
-                backdropFilter: "blur(10px)",
-                height: "75px",
-                padding:"15px 20px",
-                borderRadius: "12px",
-                display: "flex",
-                fontSize: "14px",
-                alignItems: "center",
-                justifyContent: "center",
-                fontWeight: "bold",
-                color: i === activeChordIndex ? C.btn : "#FFFFFF",
-                boxShadow: i === activeChordIndex ? "0 4px 12px #ffffff4d" : "0 4px 6px #0000001a",
-                flexShrink: 0,
-                transition: "all 0.2s ease",
+              <div 
+                key={i} 
+                id={`chord-${i}`} // O nosso Bilhete de Identidade
+                style={{
+                  background: i === activeChordIndex ? "#FFFFFF" : "#FFFFFF26",
+                  minWidth: "80px",
+                  backdropFilter: "blur(10px)",
+                  height: "75px",
+                  padding:"15px 20px",
+                  borderRadius: "12px",
+                  display: "flex",
+                  fontSize: "14px",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontWeight: "bold",
+                  color: i === activeChordIndex ? "#000000" : "#FFFFFFB3",
+                  boxShadow: i === activeChordIndex ? "0 4px 12px #ffffffb3" : "0 4px 6px #0000001a",
+                  flexShrink: 0,
+                  transition: "all 0.2s ease",
+                  border: i === activeChordIndex ? "2px solid #FFFFFF" : "1px solid #FFFFFF26",
               }}>
                 {chord.trim()}
               </div>
             ))}
+
+            {/* --- ESPAÇO FANTASMA FINAL --- */}
+            <div style={{ minWidth: "calc(50% - 40px)", flexShrink: 0 }}></div>
+
           </div>
 
           {/*aqui vai o mini player visual*/}
@@ -299,9 +332,18 @@ export default function ProgressionsScreen({
           fontSize: "13px",
           marginTop: "60px"
         }}>
-          <div style={{ fontSize: "40px", marginBottom: "10px" }}>🎹</div>
-          Ainda não geraste nenhuma progressão.<br />
-          <span style={{ fontSize: "11px" }}>Vai ao Início e gera uma!</span>
+          <div style={{ 
+            fontSize: "40px", 
+            marginBottom: "10px" 
+            }}>🎹</div>
+          <span style={{
+            fontSize: "20px",
+            display:"flex",
+            justifyContent:"center",
+          }}>Ainda não geraste nenhuma progressão.</span>
+          <span style={{ 
+            fontSize: "20px" 
+            }}>Vai ao Início e gera uma!</span>
         </div>
       )}
     </div>

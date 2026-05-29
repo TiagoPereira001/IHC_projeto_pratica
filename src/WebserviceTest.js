@@ -4,6 +4,7 @@ import bgJazz from "./assets/bg-jazz.png";
 import HomeScreen from "./screens/HomeScreen";
 import LibraryScreen from "./screens/LibraryScreen";
 import ProgressionsScreen from "./screens/ProgressionsScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 
 // Importar as  cores e estilos
 import { C, selectStyle, btnStyle } from "./cores"; 
@@ -99,24 +100,7 @@ function WebserviceTestForm() {
   useEffect(() => {
     if (email) loadSavedProgressions();
   }, [email]);
-// Efeito para centrar a nota ativa automaticamente no deslize horizontal
 
-  useEffect(() => {
-    if (scrollRef.current && activeChordIndex >= 0) {
-      const container = scrollRef.current;
-      const activeElement = container.children[activeChordIndex]; // Encontra a nota branca atual
-
-      if (activeElement) {
-        // Calcula a posição para deixar a nota exatamente no centro
-        const scrollPos = activeElement.offsetLeft - (container.clientWidth / 2) + (activeElement.clientWidth / 2);
-        
-        container.scrollTo({
-          left: scrollPos,
-          behavior: "smooth" // Faz o deslize suave (swipe left automático)
-        });
-      }
-    }
-  }, [activeChordIndex]);
   // -----------------------------
   // Generate progression
   // -----------------------------
@@ -361,35 +345,49 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
           gap: "12px",
         }}>
           
-          {/* Avatar isolado numa caixa rígida para não bloquear os botões */}
-          {/* [BUG REPORT PARA A IA] A "hitbox" (área clicável) do avatar do utilizador está defeituosa. 
-          O utilizador não consegue clicar em todo o ícone, apenas num sítio muito específico..*/}
-          <div style={{ width: "40px", height: "40px", flexShrink: 0, zIndex: 10 }}>
-            <UserButton 
-              afterSignOutUrl="/"
-              appearance={{
-                elements: {
-                  rootBox: {
-                      width: "40px",
-                      height: "40px",
-                  },
-                  userButtonBox: {
-                    width: "100%",
-                    height: "100%",
-                  },
-                  userButtonTrigger: {
-                    width: "40px",
-                    height: "40px",
-                    padding:"0",
-                    margin:0,
-                    boxShadow: "none",
-                    borderRadius:"50%",
-                  },
-                  userButtonAvatarBox: {
-                    width: "100%",
-                    height: "100%",
-                  }
-                }
+{/*[BUG REPORT / ARCHITECTURE ISSUE]: Conflito do Clerk Popover vs Mobile Frame
+// ============================================================================
+// Problema: O componente <UserButton /> do Clerk utiliza React Portals por baixo 
+// dos panos. Isto significa que o modal flutuante é injetado diretamente no <body> 
+// do browser, "escapando" aos limites físicos do nosso simulador de smartphone.
+// Tentativas de forçar o modal a ficar "Full Page" através de CSS (!important) 
+// ou no objeto 'appearance' resultam num ícone deformado ou num modal que ocupa o 
+// ecrã do computador inteiro.
+// [BUG REPORT PARA A IA] A "hitbox" (área clicável) do avatar do utilizador está defeituosa.
+O utilizador não consegue clicar em todo o ícone, apenas num sítio muito específico..
+
+
+// OBJETIVO PARA A IA:
+// 1. Abandonar a ideia de usar o popover flutuante do <UserButton />.
+// 2. Criar um novo ecrã na nossa app (ex: src/screens/ProfileScreen.js).
+// 3. Fazer com que o clique na foto de perfil funcione como um link/botão normal 
+//    que navega para esse novo ecrã.
+// 4. Nesse novo ecrã, renderizar o componente <UserProfile /> do Clerk (em modo full-page).
+// Isto garantirá que as definições de conta ocupam 100% do ecrã do telemóvel nativamente.*/}
+          <div 
+            onClick={() => setTab("profile")}
+            style={{ 
+              width: "44px", 
+              height: "44px", 
+              flexShrink: 0, 
+              zIndex: 10,
+              cursor: "pointer",
+              borderRadius: "50%",
+              overflow: "hidden",
+              border: `2px solid ${tab === "profile" ? "#fff" : "#c8d8b0"}`,
+              boxSizing: "border-box",
+              transition: "all 0.2s",
+              boxShadow: tab === "profile" ? "0 0 12px rgba(255,255,255,0.5)" : "none",
+            }}
+          >
+            <img 
+              src={user?.imageUrl} 
+              alt="Profile" 
+              style={{ 
+                width: "100%", 
+                height: "100%", 
+                objectFit: "cover",
+                display: "block"
               }} 
             />
           </div>
@@ -404,7 +402,7 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
           }}>
             {[
               ["home", "Inicio"],
-              ["progressions", "Progressoes"],
+              ["progressions", "Progressões"],
               ["library", "Biblioteca"]
             ].map(([id, label]) => (
               <div key={id}
@@ -438,7 +436,7 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
       <div style={{
         flex: 1,
         overflowY: "auto",
-        padding: "16px"
+        padding: tab === "profile" ? "0" : "16px"
       }}>
 
       {/*inicio*/}
@@ -492,6 +490,11 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
             openInPlayer={openInPlayer} 
             deleteProgression={deleteProgression} 
           />
+        )}
+
+        {/* Perfil */}
+        {tab === "profile" && (
+          <ProfileScreen setTab={setTab} />
         )}
 
       </div>
