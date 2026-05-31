@@ -1,0 +1,17 @@
+.phone-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #e5e7eb;
+}
+/* Ocultar a barra de scroll para Chrome, Safari e Opera */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ocultar a barra de scroll para IE, Edge e Firefox em todos os elementos */
+* {
+  -ms-overflow-style: none;  /* IE e Edge */
+  scrollbar-width: none;     /* Firefox */
+}
