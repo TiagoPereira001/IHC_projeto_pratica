@@ -104,9 +104,9 @@ function WebserviceTestForm() {
   // -----------------------------
   const generateProgression = async (forceKey, forceStructure, forceModulation) => {
     try {
-      const key        = forceKey        || selectedKey        || "Random";
-      const structure  = forceStructure  || selectedStructure  || "Random";
-      const modulation = forceModulation || selectedModulation || "Random";
+      const key        = forceKey        || selectedKey        || "Aleatório";
+      const structure  = forceStructure  || selectedStructure  || "Aleatório";
+      const modulation = forceModulation || selectedModulation || "Aleatório";
 
       const res = await fetch(`${BASE_URL}/api/generate/${key}/${structure}/${modulation}`);
       const data = await res.json();
@@ -126,9 +126,9 @@ function WebserviceTestForm() {
           body: JSON.stringify({
             email,
             chords: data.chords,
-            key: data.key || (key === "Random" ? data.key : key),
-            structure: data.structure || (structure === "Random" ? data.structure : structure),
-            modulation: data.modulation || (modulation === "Random" ? data.modulation : modulation)
+            key: data.key || (key === "Aleatório" ? data.key : key),
+            structure: data.structure || (structure === "Aleatório" ? data.structure : structure),
+            modulation: data.modulation || (modulation === "Aleatório" ? data.modulation : modulation)
           })
         });
         await loadSavedProgressions();
@@ -282,9 +282,9 @@ function WebserviceTestForm() {
           email,
           chords: progression.chords,
           
-          key: progression.key || selectedKey || "Random",
-          structure: progression.structure || selectedStructure || "Random",
-          modulation: progression.modulation || selectedModulation || "Random"
+          key: progression.key || selectedKey || "Aleatório",
+          structure: progression.structure || selectedStructure || "Aleatório",
+          modulation: progression.modulation || selectedModulation || "Aleatório"
         })
       });
 

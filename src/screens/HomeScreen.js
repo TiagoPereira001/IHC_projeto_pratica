@@ -57,7 +57,7 @@ export default function HomeScreen({
       </div>
 
       {/* 2 botoes de gerar */}
-      <button onClick={() => generateProgression("Random", "Random", "Random")} 
+      <button onClick={() => generateProgression("Aleatório", "Aleatório", "Aleatório")} 
       style={{
         ...btnStyle,
         marginTop: "12px",
