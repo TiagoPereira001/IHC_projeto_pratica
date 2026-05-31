@@ -1,6 +1,6 @@
-// src/ChordWheel.js
+
 import React from "react";
-import { WHEEL_KEYS } from "../cores"; // Importamos as cores da roda que guardámos no Theme
+import { WHEEL_KEYS } from "../cores"; // 
 
 function segmentPath(cx, cy, r1, r2, startAngle, endAngle) {
   const toRad = (deg) => (deg * Math.PI) / 180;

@@ -1,13 +1,7 @@
-// src/components/LibraryFilters.js
 import React, { useState, useEffect } from "react";
 import { C } from "../cores";
 
-/**
- * Componente responsável pelo ecrã de filtros da Biblioteca (Bottom Sheet Modal).
- * Utiliza um padrão de "Segmented Control" (Tabs) no topo para alternar categorias,
- * e "Toggle Buttons" (Pills/Círculos) para as seleções, maximizando a área de toque
- * (Lei de Fitts) e garantindo uma estética moderna e nativa.
- */
+
 export default function LibraryFilters({
   appliedFilters,
   availableKeys,
@@ -214,7 +208,7 @@ export default function LibraryFilters({
         {/* BARRA EM CIMA: Segmented Control (Tabs) */}
         <div style={{
           display: "flex",
-          background: "#00000026", // Fundo ligeiramente escuro para a barra
+          background: "#00000026", 
           borderRadius: "12px",
           padding: "4px",
           marginBottom: "16px"

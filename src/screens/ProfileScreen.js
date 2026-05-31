@@ -1,4 +1,3 @@
-// src/screens/ProfileScreen.js
 import React from "react";
 import { UserProfile, useClerk } from "@clerk/clerk-react";
 
@@ -109,7 +108,7 @@ export default function ProfileScreen({ setTab }) {
                 padding: "0",
               },
               navbar: {
-                display: "none", // Mantemos escondido para ganhar largura
+                display: "none", 
               },
               scrollBox: {
                 borderRadius: "0",

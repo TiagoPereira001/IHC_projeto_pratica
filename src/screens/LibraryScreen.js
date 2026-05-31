@@ -7,18 +7,14 @@ import LibraryFilters from "../components/LibraryFilters";
  * Responsável por apresentar a lista de progressões guardadas e invocar o modal de filtros.
  */
 export default function LibraryScreen({ savedProgressions, openInPlayer, deleteProgression }) {
-  // Gestão de estado do Modal Overlay
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   
-  // Estado persistente das escolhas finais do utilizador
   const [appliedFilters, setAppliedFilters] = useState({ key: [], structure: [], modulation: [] });
 
-  // Utilização do hook useMemo para extrair metadados e evitar recálculos computacionais pesados
   const availableKeys = useMemo(() => [...new Set(savedProgressions.map(p => p.key))], [savedProgressions]);
   const availableStructures = useMemo(() => [...new Set(savedProgressions.map(p => p.structure))], [savedProgressions]);
   const availableModulations = useMemo(() => [...new Set(savedProgressions.map(p => p.modulation))], [savedProgressions]);
 
-  // Derivação do estado final da UI com base nos arrays de filtro ativos
   const filteredProgressions = useMemo(() => {
     return savedProgressions.filter(p => {
       const matchKey = appliedFilters.key.length === 0 || appliedFilters.key.includes(p.key);
@@ -30,7 +26,6 @@ export default function LibraryScreen({ savedProgressions, openInPlayer, deleteP
 
   return (
     <>
-      {/* VISTA PRINCIPAL DA BIBLIOTECA */}
       <div>
         <div style={{ 
           display: "flex", 
@@ -86,7 +81,6 @@ export default function LibraryScreen({ savedProgressions, openInPlayer, deleteP
         </div>
 
         {filteredProgressions.length === 0 ? (
-          /* UI de Prevenção de Erros (Empty State) */
           <div style={{ 
             textAlign: "center", 
             color: C.muted, 
@@ -214,7 +208,7 @@ export default function LibraryScreen({ savedProgressions, openInPlayer, deleteP
           onClose={() => setIsFilterOpen(false)}
           onApply={(newFilters) => {
             setAppliedFilters(newFilters);
-            setIsFilterOpen(false); // A animação e fecho já foram tratados dentro do componente filho
+            setIsFilterOpen(false); 
           }}
         />
       )}

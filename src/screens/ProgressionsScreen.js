@@ -9,11 +9,8 @@ export default function ProgressionsScreen({
   setTab, playChords, openInPlayer
 }) {
 
-  // ==========================================
-  // LÓGICA DE UX: AUTO-SCROLL À PROVA DE iOS
-  // ==========================================
+
   useEffect(() => {
-    // Voltámos ao scrollIntoView porque é nativo e não é bloqueado pelo Safari!
     if (activeChordIndex !== null && activeChordIndex !== undefined && activeChordIndex >= 0) {
       const activeElement = document.getElementById(`chord-${activeChordIndex}`);
       if (activeElement && scrollRef.current) {
@@ -59,8 +56,7 @@ export default function ProgressionsScreen({
             {/*tenho que por um css aqui para esconder a barra de horizontal de scrooll*/}
             <style>{`div::-webkit-scrollbar { display: none; }`}</style>
 
-            {/* --- ESPAÇO FANTASMA INICIAL --- */}
-            {/* Ajustado para calc(50% - 40px) para centrar perfeitamente a nota de 80px */}
+
             <div style={{ minWidth: "calc(50% - 40px)", flexShrink: 0 }}></div>
 
             {progression.chords.split("|").map((chord, i) => (
@@ -89,7 +85,6 @@ export default function ProgressionsScreen({
               </div>
             ))}
 
-            {/* --- ESPAÇO FANTASMA FINAL --- */}
             <div style={{ minWidth: "calc(50% - 40px)", flexShrink: 0 }}></div>
 
           </div>

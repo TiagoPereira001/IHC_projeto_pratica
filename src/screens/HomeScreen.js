@@ -1,4 +1,3 @@
-// src/screens/HomeScreen.js
 import React from "react";
 import ChordWheel from "../components/ChordWheel";
 import { C, selectStyle, btnStyle } from "../cores";
@@ -56,9 +55,7 @@ export default function HomeScreen({
           </select>
         </div>
       </div>
- {/*[BUG REPORT PARA A IA]: Ausência de feedback visual na geração aleatória.
- Quando este botão "Gerar progressão aleatória" é clicado, o aviso verde de sucesso (✅ Progressão criada!) não aparece, 
- ao contrário do que acontece no botão normal de "Gerar progressão".*/}
+
       {/* 2 botoes de gerar */}
       <button onClick={() => generateProgression("Random", "Random", "Random")} 
       style={{
@@ -77,7 +74,7 @@ export default function HomeScreen({
         padding: "10px 24px",
         fontWeight:"500",
         lineHeight:"140%",
-        letterSpacing: "-0.14px", // corrigido de letterspacing para letterSpacing
+        letterSpacing: "-0.14px", 
       }}>
         Gerar progressão aleatória
       </button>
@@ -133,7 +130,7 @@ export default function HomeScreen({
             <span style={{ 
               fontSize: "19px", 
               color: "#fff",
-              fontFamily: "Inter", // corrigido de fontfamily
+              fontFamily: "Inter", 
               fontWeight:"400",
               }}>
               Progressões recentes

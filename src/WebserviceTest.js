@@ -16,7 +16,7 @@ const BASE_URL = "https://genjazz-api.fly.dev";
 
 
 function WebserviceTestForm() {
-  const [tempo, setTempo] = useState(100); // Estado para controlar os BPMs do slider
+  const [tempo, setTempo] = useState(100); 
   const { user } = useUser();
   const email = user?.primaryEmailAddress?.emailAddress;
 
@@ -81,9 +81,7 @@ function WebserviceTestForm() {
   // Load saved progressions
   // -----------------------------
 
-// [BUG REPORT PARA A IA]: Falha de reatividade na lista de "Progressões recentes" do HomeScreen.
-// As 3 progressões mais recentes da tab 'home' não atualizam automaticamente de forma fluida. 
-// Neste momento, a interface só reflete novos dados se o utilizador guardar explicitamente uma progressão.
+
   const loadSavedProgressions = async () => {
     if (!email) return;
 
@@ -104,7 +102,7 @@ function WebserviceTestForm() {
   // -----------------------------
   // Generate progression
   // -----------------------------
-const generateProgression = async (forceKey, forceStructure, forceModulation) => {
+  const generateProgression = async (forceKey, forceStructure, forceModulation) => {
     try {
       const key        = forceKey        || selectedKey        || "Random";
       const structure  = forceStructure  || selectedStructure  || "Random";
@@ -120,9 +118,23 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
       setActiveChordIndex(-1);
       setSaved(true);
       
-      await loadSavedProgressions(); 
-      
-      setTimeout(() => setSaved(false), 3000); 
+      // Auto-save para garantir reatividade na lista de "Progressões recentes"
+      if (email) {
+        await fetch(`${BASE_URL}/api/chords`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            chords: data.chords,
+            key: data.key || (key === "Random" ? data.key : key),
+            structure: data.structure || (structure === "Random" ? data.structure : structure),
+            modulation: data.modulation || (modulation === "Random" ? data.modulation : modulation)
+          })
+        });
+        await loadSavedProgressions();
+      }
+
+      setTimeout(() => setSaved(false), 3000);
     } catch (err) {
       setError(err.message);
     }
@@ -163,16 +175,24 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
     }
   };
 
-  // [BUG REPORT PARA A IA]: Falha no Auto-Play ao abrir uma música da Biblioteca.
-// Na aba da Biblioteca, quando o utilizador clica no botão Play de uma música, a aplicação
-// navega com sucesso para a aba "Progressões" e carrega as notas corretas, mas o áudio não inicia sozinho.
-  const openInPlayer = (p) => {
+
+  const openInPlayer = async (p) => {
     setProgression(p);       // Carrega a progressão escolhida para o ecrã
     setAudioUrl(null);       // Limpa o áudio da música anterior (se houver)
     setIsPlaying(false);
     setCurrentTime(0);
     setActiveChordIndex(-1);
     setTab("progressions");  // Muda a tab automaticamente
+
+    // Fetch do áudio para permitir Auto-Play
+    try {
+      const encoded = encodeURIComponent(p.chords);
+      const res = await fetch(`${BASE_URL}/api/chords2mp3/${encoded}`);
+      const data = await res.json();
+      setAudioUrl(`${BASE_URL}${data.mp3_url}`);
+    } catch (err) {
+      console.error("Erro no auto-play:", err);
+    }
   };
 
   //aqui vai toda a logica do player avançado na pagina de progressoes
@@ -344,27 +364,9 @@ const generateProgression = async (forceKey, forceStructure, forceModulation) =>
           alignItems: "center",
           gap: "12px",
         }}>
-          
-{/*[BUG REPORT / ARCHITECTURE ISSUE]: Conflito do Clerk Popover vs Mobile Frame
-// ============================================================================
-// Problema: O componente <UserButton /> do Clerk utiliza React Portals por baixo 
-// dos panos. Isto significa que o modal flutuante é injetado diretamente no <body> 
-// do browser, "escapando" aos limites físicos do nosso simulador de smartphone.
-// Tentativas de forçar o modal a ficar "Full Page" através de CSS (!important) 
-// ou no objeto 'appearance' resultam num ícone deformado ou num modal que ocupa o 
-// ecrã do computador inteiro.
-// [BUG REPORT PARA A IA] A "hitbox" (área clicável) do avatar do utilizador está defeituosa.
-O utilizador não consegue clicar em todo o ícone, apenas num sítio muito específico..
 
-
-// OBJETIVO PARA A IA:
-// 1. Abandonar a ideia de usar o popover flutuante do <UserButton />.
-// 2. Criar um novo ecrã na nossa app (ex: src/screens/ProfileScreen.js).
-// 3. Fazer com que o clique na foto de perfil funcione como um link/botão normal 
-//    que navega para esse novo ecrã.
-// 4. Nesse novo ecrã, renderizar o componente <UserProfile /> do Clerk (em modo full-page).
-// Isto garantirá que as definições de conta ocupam 100% do ecrã do telemóvel nativamente.*/}
-          <div 
+          {/* Profile Avatar Button */}
+          <button 
             onClick={() => setTab("profile")}
             style={{ 
               width: "44px", 
@@ -378,19 +380,17 @@ O utilizador não consegue clicar em todo o ícone, apenas num sítio muito espe
               boxSizing: "border-box",
               transition: "all 0.2s",
               boxShadow: tab === "profile" ? "0 0 12px rgba(255,255,255,0.5)" : "none",
+              padding: 0,
+              background: "none",
+              display: "block"
             }}
           >
             <img 
               src={user?.imageUrl} 
               alt="Profile" 
-              style={{ 
-                width: "100%", 
-                height: "100%", 
-                objectFit: "cover",
-                display: "block"
-              }} 
+              style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" }} 
             />
-          </div>
+          </button>
 
           {/*tabs*/}
           <div style={{
@@ -482,7 +482,7 @@ O utilizador não consegue clicar em todo o ícone, apenas num sítio muito espe
             playChords={playChords}
             openInPlayer={openInPlayer}
           />
-        )}  {/* ← fim do tab progressions */}
+        )} 
         {/* Biblioteca */}
         {tab === "library" && (
           <LibraryScreen 
